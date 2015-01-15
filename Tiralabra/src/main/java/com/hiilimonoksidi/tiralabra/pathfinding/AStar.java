@@ -10,12 +10,37 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Set;
 
+/**
+ * A*-hakualgoritmin implementaatio.
+ *
+ * @author Janne Ruoho
+ */
 public class AStar extends PathfindingAlgorithm {
 
-    private float[][] g; // Etäisyys alusta tiettyyn solmuun
-    private float[][] f; // Arvioitu etäisyys tietystä soulmusta maaliin plus sen solmun g
+    /**
+     * Etäisyys tietystä solmusta alkupisteeseen.
+     */
+    private float[][] g;
+
+    /**
+     * Arvioitu etäisyys tietystä solmusta maaliin plus sen solmun g-arvo.
+     */
+    private float[][] f;
+
+    /**
+     * Joukko, joka sisältää jo tutkitut solmut.
+     */
     private Set<Node> closed;
+
+    /**
+     * Joukko, joka sisältää aina samat solmut kuin openQueue. Nopeuttaa
+     * sisältyvyyden tarkistusta.
+     */
     private Set<Node> open;
+
+    /**
+     * Prioriteettijono, joka sisältää solmut, jotka odottavat tutkimisvuoroa.
+     */
     private PriorityQueue<Node> openQueue;
 
     public AStar(Graph graph) {
@@ -23,50 +48,50 @@ public class AStar extends PathfindingAlgorithm {
 
         g = new float[graph.height][graph.width];
         f = new float[graph.height][graph.width];
-        
+
         closed = new HashSet<>();
-        open = new HashSet<>(); // Nopeuttaa sisältyvyyden tarkistusta
+        open = new HashSet<>();
         openQueue = new PriorityQueue<>(new NodeComparator());
     }
 
     @Override
     public Path search(Point start, Point goal) {
         Node startNode = graph.get(start);
-        openQueue.offer(startNode); // Lisätään alku tutkittavien solmujen joukkoon
+        openQueue.offer(startNode);
         open.add(startNode);
-        
+
         int gx = goal.x;
         int gy = goal.y;
 
-        while (!openQueue.isEmpty()) { // Kunnes ei enää tutkittavaa
+        while (!openQueue.isEmpty()) {
             Node current = openQueue.poll();
-            
+
             open.remove(current);
             closed.add(current);
 
             int cx = current.x;
             int cy = current.y;
 
-            if (cx == gx && cy == gy) { // Nykyisen x ja y == maalin x ja y
+            if (cx == gx && cy == gy) {
                 return reconstructPath(current);
             }
 
-            for (Node neighbor : graph.getNeighbors(cx, cy)) { // Tutkitaan naapurit
+            for (Node neighbor : graph.getNeighbors(cx, cy)) {
                 if (closed.contains(neighbor)) {
-                    continue; // Naapuri jo tutkittu
+                    continue;
                 }
 
                 int nx = neighbor.x;
                 int ny = neighbor.y;
 
-                float gNeighbor = g[cy][cx] + Calc.dist(cx, cy, nx, ny); // g(naapuri) = g(tämä) + dist(tämä, naapuri)
+                float gNeighbor = g[cy][cx] + Calc.dist(cx, cy, nx, ny);
 
                 boolean neighborOpen = open.contains(neighbor);
-                if (!neighborOpen || gNeighbor < g[ny][nx]) { // Jos naapuria ei jo tutkita, tai tunnetaan parempi reitti
+                if (!neighborOpen || gNeighbor < g[ny][nx]) {
                     neighbor.setParent(current);
 
-                    g[ny][nx] = gNeighbor; // Päivitä naapurin g
-                    f[ny][nx] = gNeighbor + Calc.dist(nx, ny, gx, gy); // Ja naapurin f
+                    g[ny][nx] = gNeighbor;
+                    f[ny][nx] = gNeighbor + Calc.dist(nx, ny, gx, gy);
 
                     if (!neighborOpen) {
                         openQueue.offer(neighbor);
@@ -79,6 +104,10 @@ public class AStar extends PathfindingAlgorithm {
         return null;
     }
 
+    /**
+     * Vertailee kahden solmun järjestystä. Ensimmäinen solmu on se, jonka
+     * kautta kulkee lyhempi matka alusta maaliin (pienempi f).
+     */
     private class NodeComparator implements Comparator<Node> {
 
         @Override

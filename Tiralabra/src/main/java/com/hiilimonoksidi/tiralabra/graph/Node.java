@@ -2,11 +2,27 @@ package com.hiilimonoksidi.tiralabra.graph;
 
 import com.hiilimonoksidi.tiralabra.misc.Point;
 
+/**
+ * Verkon solmu.
+ * 
+ * @author Janne Ruoho
+ */
 public class Node {
 
+    /**
+     * Solmun sijainti verkossa
+     */
     public final int x, y;
-    private final boolean clear; // Vapaa vai este
-    private Node parent; // Se solmu, jota kautta saavuttiin tähän solmuun
+    
+    /**
+     * Onko solmu vapaa vai este
+     */
+    private final boolean clear;
+    
+    /**
+     * Solmu, josta saavuttiin tähän
+     */
+    private Node parent;
 
     public Node(int x, int y, boolean empty) {
         this.x = x;

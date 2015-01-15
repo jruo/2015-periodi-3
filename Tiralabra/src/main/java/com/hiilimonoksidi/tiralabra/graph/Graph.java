@@ -5,6 +5,12 @@ import com.hiilimonoksidi.tiralabra.misc.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Verkko, tai oikeastaan ruudukko, jonka jokainen vapaa solmu on yhteydessä
+ * jokaiseen ympärillään olevaan vapaaseen solmuun.
+ *
+ * @author Janne Ruoho
+ */
 public class Graph {
 
     public final int width, height;
@@ -20,6 +26,12 @@ public class Graph {
         return nodes;
     }
 
+    /**
+     * Palauttaa solmun annetussa sijainnissa.
+     *
+     * @param p Solmun sijainti
+     * @return Solmu sijainnissa p
+     */
     public Node get(Point p) {
         return nodes[p.y][p.x];
     }
@@ -28,6 +40,12 @@ public class Graph {
         return nodes[y][x];
     }
 
+    /**
+     * Palauttaa kaikki annetun solmun vapaat naapurisolmut.
+     *
+     * @param node Solmu, jonka naapurit halutaan
+     * @return Lista naapureista
+     */
     public List<Node> getNeighbors(Node node) {
         return getNeighbors(node.x, node.y);
     }
@@ -82,6 +100,14 @@ public class Graph {
         return neighbors;
     }
 
+    /**
+     * Palauttaa solmun (x, y) naapurisolmun suunnassa dir.
+     *
+     * @param x Solmun x
+     * @param y Solmun y
+     * @param dir Suunta
+     * @return Naapurisolmu
+     */
     private Node getNeighborAtDirection(int x, int y, Direction dir) {
         int dx = x + dir.dx;
         int dy = y + dir.dy;
@@ -93,6 +119,13 @@ public class Graph {
         }
     }
 
+    /**
+     * Tarkistaa, kuuluuko solmu (x, y) verkkoon.
+     *
+     * @param x Solmun x
+     * @param y Solmun y
+     * @return Tosi jos ja vain jos kuuluu, epätosi muutoin
+     */
     private boolean isValidNode(int x, int y) {
         return x >= 0 && y >= 0 && y < height && x < width;
     }

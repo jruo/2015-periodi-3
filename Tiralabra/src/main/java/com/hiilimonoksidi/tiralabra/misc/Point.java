@@ -1,7 +1,15 @@
 package com.hiilimonoksidi.tiralabra.misc;
 
+/**
+ * Piste.
+ *
+ * @author Janne Ruoho
+ */
 public class Point {
 
+    /**
+     * Pisteen sijainti
+     */
     public final int x, y;
 
     public Point(int x, int y) {

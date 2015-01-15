@@ -1,5 +1,8 @@
 package com.hiilimonoksidi.tiralabra.misc;
 
+/**
+ * @author Janne Ruoho
+ */
 public enum Direction {
 
     NORTH(0, -1),
