@@ -45,7 +45,10 @@ public class AStar extends PathfindingAlgorithm {
 
     public AStar(Graph graph) {
         super(graph);
+    }
 
+    @Override
+    public void init() {
         g = new float[graph.height][graph.width];
         f = new float[graph.height][graph.width];
 

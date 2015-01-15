@@ -21,6 +21,23 @@ public class Graph {
         height = nodes.length;
         width = nodes[0].length;
     }
+    
+    /**
+     * Kopioi annetun verkon.
+     * 
+     * @param graph Kopioitava verkko
+     */
+    public Graph(Graph graph) {
+        width = graph.width;
+        height = graph.height;
+        nodes = new Node[height][width];
+        
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                nodes[j][i] = new Node(graph.nodes[j][i]);
+            }
+        }
+    }
 
     public Node[][] getNodes() {
         return nodes;

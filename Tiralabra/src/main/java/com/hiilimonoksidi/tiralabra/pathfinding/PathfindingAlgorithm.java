@@ -18,8 +18,14 @@ public abstract class PathfindingAlgorithm {
     protected Graph graph;
 
     public PathfindingAlgorithm(Graph graph) {
-        this.graph = graph;
+        this.graph = new Graph(graph);
     }
+
+    /**
+     * Alustaa algoritmin tarvitsevat rakenteet. Kutsuttava ennen search-metodin
+     * kutsumista
+     */
+    public abstract void init();
 
     /**
      * Aloittaa reitinetsinnän.

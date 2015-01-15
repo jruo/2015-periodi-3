@@ -30,6 +30,17 @@ public class Node {
         this.clear = empty;
     }
     
+    /**
+     * Kopioi anneton solmun.
+     * 
+     * @param node Kopioitava solmu
+     */
+    public Node(Node node) {
+        x = node.x;
+        y = node.y;
+        clear = node.clear;
+    }
+    
     public void setParent(Node node) {
         parent = node;
     }
