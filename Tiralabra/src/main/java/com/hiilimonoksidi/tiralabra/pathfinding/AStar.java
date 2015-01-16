@@ -1,17 +1,15 @@
 package com.hiilimonoksidi.tiralabra.pathfinding;
 
-import com.hiilimonoksidi.tiralabra.graph.Graph;
 import com.hiilimonoksidi.tiralabra.graph.Node;
 import com.hiilimonoksidi.tiralabra.graph.Path;
 import com.hiilimonoksidi.tiralabra.misc.Calc;
-import com.hiilimonoksidi.tiralabra.misc.Point;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Set;
 
 /**
- * A*-hakualgoritmin implementaatio.
+ * A*-hakualgoritmi.
  *
  * @author Janne Ruoho
  */
@@ -43,10 +41,6 @@ public class AStar extends PathfindingAlgorithm {
      */
     private PriorityQueue<Node> openQueue;
 
-    public AStar(Graph graph) {
-        super(graph);
-    }
-
     @Override
     public void init() {
         g = new float[graph.height][graph.width];
@@ -58,7 +52,7 @@ public class AStar extends PathfindingAlgorithm {
     }
 
     @Override
-    public Path search(Point start, Point goal) {
+    public Path search() {
         Node startNode = graph.get(start);
         openQueue.offer(startNode);
         open.add(startNode);

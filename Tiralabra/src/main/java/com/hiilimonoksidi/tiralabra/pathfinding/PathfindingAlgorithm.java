@@ -16,26 +16,38 @@ public abstract class PathfindingAlgorithm {
      * Verkko, josta etsitään reitti
      */
     protected Graph graph;
-
-    public PathfindingAlgorithm(Graph graph) {
-        this.graph = new Graph(graph);
-    }
+    
+    /**
+     * Reitinetsinnän aloitus- ja lopetuspisteet
+     */
+    protected Point start, goal;
 
     /**
-     * Alustaa algoritmin tarvitsevat rakenteet. Kutsuttava ennen search-metodin
-     * kutsumista
+     * Alustaa algoritmin. Kutsuttava ennen search-metodin kutsumista.
+     *
+     * @param graph Verkko
+     * @param start Reitin aloituspiste
+     * @param goal Reitin lopetuspiste
      */
-    public abstract void init();
+    public final void init(Graph graph, Point start, Point goal) {
+        this.graph = new Graph(graph);
+        this.start = start;
+        this.goal = goal;
+        init();
+    }
+    
+    /**
+     * Alustaa algoritmin käyttämät tietorakenteet.
+     */
+    protected abstract void init();
 
     /**
      * Aloittaa reitinetsinnän.
      *
-     * @param start Reitin aloituspiste
-     * @param end Reitin lopetuspiste
      * @return Polun aloituspisteestä lopetuspisteeseen, jos reitti on olemassa.
      * Jos reittiä ei ole, palauttaa null.
      */
-    public abstract Path search(Point start, Point end);
+    public abstract Path search();
 
     /**
      * Rakentaa polun annetusta solmusta taaksepäin aloituspisteen solmuun

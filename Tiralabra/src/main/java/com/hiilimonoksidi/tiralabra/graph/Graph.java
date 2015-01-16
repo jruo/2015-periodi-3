@@ -69,6 +69,10 @@ public class Graph {
 
     public List<Node> getNeighbors(int x, int y) {
         List<Node> neighbors = new ArrayList<>();
+        
+        if (!nodes[y][x].clear) {
+            return neighbors;
+        }
 
         Node north = getNeighborAtDirection(x, y, Direction.NORTH);
         Node east = getNeighborAtDirection(x, y, Direction.EAST);
@@ -84,33 +88,33 @@ public class Graph {
         boolean southClear = false;
         boolean westClear = false;
 
-        if (north != null && north.isClear()) {
+        if (north != null && north.clear) {
             neighbors.add(north);
             northClear = true;
         }
-        if (east != null && east.isClear()) {
+        if (east != null && east.clear) {
             neighbors.add(east);
             eastClear = true;
         }
-        if (south != null && south.isClear()) {
+        if (south != null && south.clear) {
             neighbors.add(south);
             southClear = true;
         }
-        if (west != null && west.isClear()) {
+        if (west != null && west.clear) {
             neighbors.add(west);
             westClear = true;
         }
 
-        if (northeast != null && northeast.isClear() && (northClear || eastClear)) {
+        if (northeast != null && northeast.clear && (northClear || eastClear)) {
             neighbors.add(northeast);
         }
-        if (northwest != null && northwest.isClear() && (northClear || westClear)) {
+        if (northwest != null && northwest.clear && (northClear || westClear)) {
             neighbors.add(northwest);
         }
-        if (southeast != null && southeast.isClear() && (southClear || eastClear)) {
+        if (southeast != null && southeast.clear && (southClear || eastClear)) {
             neighbors.add(southeast);
         }
-        if (southwest != null && southwest.isClear() && (southClear || westClear)) {
+        if (southwest != null && southwest.clear && (southClear || westClear)) {
             neighbors.add(southwest);
         }
 
@@ -152,7 +156,7 @@ public class Graph {
         String r = "";
         for (Node[] row : nodes) {
             for (Node node : row) {
-                r += node.isClear() ? "." : "#";
+                r += node.clear ? "." : "#";
             }
             r += "\n";
         }

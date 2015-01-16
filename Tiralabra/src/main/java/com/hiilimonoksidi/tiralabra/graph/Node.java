@@ -17,7 +17,7 @@ public class Node {
     /**
      * Onko solmu vapaa vai este
      */
-    private final boolean clear;
+    public final boolean clear;
     
     /**
      * Solmu, josta saavuttiin tähän
