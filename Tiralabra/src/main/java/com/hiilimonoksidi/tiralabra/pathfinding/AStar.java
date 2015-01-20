@@ -81,7 +81,7 @@ public class AStar extends PathfindingAlgorithm {
                 int nx = neighbor.x;
                 int ny = neighbor.y;
 
-                float gNeighbor = g[cy][cx] + Calc.dist(cx, cy, nx, ny);
+                float gNeighbor = g[cy][cx] + (cx == nx || cy == ny ? 1 : SQRT_2);
 
                 boolean neighborOpen = open.contains(neighbor);
                 if (!neighborOpen || gNeighbor < g[ny][nx]) {

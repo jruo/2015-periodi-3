@@ -17,6 +17,23 @@ public class Point {
         this.y = y;
     }
 
+    /**
+     * Luo uuden Point-olion merkkijonosta. Merkkijonon on oltava muotoa "x,y".
+     *
+     * @param location Pisteen sijainti
+     */
+    public Point(String location) {
+        int comma = location.indexOf(",");
+        String s1 = location.substring(0, comma);
+        String s2 = location.substring(comma + 1, location.length());
+        try {
+            x = Integer.parseInt(s1);
+            y = Integer.parseInt(s2);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid coordinates: " + location);
+        }
+    }
+
     public int getX() {
         return x;
     }

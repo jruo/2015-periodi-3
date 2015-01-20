@@ -4,6 +4,8 @@ import com.hiilimonoksidi.tiralabra.graph.Graph;
 import com.hiilimonoksidi.tiralabra.graph.Node;
 import com.hiilimonoksidi.tiralabra.graph.Path;
 import com.hiilimonoksidi.tiralabra.misc.Point;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Yliluokka reitinensintäalgoritmeille.
@@ -11,12 +13,14 @@ import com.hiilimonoksidi.tiralabra.misc.Point;
  * @author Janne Ruoho
  */
 public abstract class PathfindingAlgorithm {
+    
+    protected final float SQRT_2 = 1.41421356237f;
 
     /**
      * Verkko, josta etsitään reitti
      */
     protected Graph graph;
-    
+
     /**
      * Reitinetsinnän aloitus- ja lopetuspisteet
      */
@@ -35,7 +39,7 @@ public abstract class PathfindingAlgorithm {
         this.goal = goal;
         init();
     }
-    
+
     /**
      * Alustaa algoritmin käyttämät tietorakenteet.
      */
@@ -67,5 +71,33 @@ public abstract class PathfindingAlgorithm {
         }
 
         return path;
+    }
+
+    public enum Type {
+
+        A_STAR(AStar.class, "A*"),
+        DIJKSTRA(Dijkstra.class, "Dijkstra");
+
+        private final Class<? extends PathfindingAlgorithm> clazz;
+        private final String name;
+
+        private Type(Class<? extends PathfindingAlgorithm> clazz, String name) {
+            this.clazz = clazz;
+            this.name = name;
+        }
+
+        public PathfindingAlgorithm getInstance() {
+            try {
+                return clazz.newInstance();
+            } catch (InstantiationException | IllegalAccessException ex) {
+                Logger.getLogger(Type.class.getName()).log(Level.SEVERE, null, ex);
+                throw null;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 }

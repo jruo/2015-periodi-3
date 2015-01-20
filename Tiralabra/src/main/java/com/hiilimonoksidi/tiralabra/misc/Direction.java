@@ -1,6 +1,8 @@
 package com.hiilimonoksidi.tiralabra.misc;
 
 /**
+ * Suunta.
+ * 
  * @author Janne Ruoho
  */
 public enum Direction {
@@ -14,6 +16,9 @@ public enum Direction {
     SOUTHEAST(1, 1),
     SOUTHWEST(-1, 1);
 
+    /**
+     * Suuntavektorin komponentit
+     */
     public final int dx, dy;
 
     private Direction(int dx, int dy) {

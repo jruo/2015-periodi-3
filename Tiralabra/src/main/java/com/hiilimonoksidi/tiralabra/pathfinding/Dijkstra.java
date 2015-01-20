@@ -2,7 +2,6 @@ package com.hiilimonoksidi.tiralabra.pathfinding;
 
 import com.hiilimonoksidi.tiralabra.graph.Node;
 import com.hiilimonoksidi.tiralabra.graph.Path;
-import com.hiilimonoksidi.tiralabra.misc.Calc;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
@@ -10,7 +9,7 @@ import java.util.Set;
 
 /**
  * Dijkstran algoritmi.
- * 
+ *
  * @author Janne Ruoho
  */
 public class Dijkstra extends PathfindingAlgorithm {
@@ -21,8 +20,8 @@ public class Dijkstra extends PathfindingAlgorithm {
     private float d[][];
 
     /**
-     * Jono, joka sisältää kaikki verkon solmut paremmuusjärjestyksessä (Pienin
-     * d-arvo ensin).
+     * Prioriteettijono, joka sisältää kaikki verkon solmut
+     * paremmuusjärjestyksessä (Pienin d-arvo ensin).
      */
     private PriorityQueue<Node> nodes;
 
@@ -33,14 +32,17 @@ public class Dijkstra extends PathfindingAlgorithm {
 
     @Override
     public void init() {
-        d = new float[graph.height][graph.width];
+        int width = graph.width;
+        int height = graph.height;
+
+        d = new float[height][width];
 
         nodes = new PriorityQueue<>(new NodeComparator());
         checked = new HashSet<>();
 
         d[start.y][start.x] = 0;
-        for (int i = 0; i < graph.height; i++) {
-            for (int j = 0; j < graph.width; j++) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
                 Node node = graph.get(j, i);
                 if (!node.clear) {
                     continue;
@@ -74,14 +76,14 @@ public class Dijkstra extends PathfindingAlgorithm {
                     int nx = neighbor.x;
                     int ny = neighbor.y;
 
-                    float dTest = d[cy][cx] + Calc.dist(cx, cy, nx, ny);
+                    float dTest = d[cy][cx] + (cx == nx || cy == ny ? 1 : SQRT_2);
                     if (dTest < d[ny][nx]) {
                         d[ny][nx] = dTest;
                         neighbor.setParent(current);
 
-                        // Päivitetään jono
+                        // Väliaikainen hidas operaatio prioriteetin päivittämiseen
                         nodes.remove(neighbor);
-                        nodes.add(neighbor);
+                        nodes.offer(neighbor);
                     }
                 }
             }
