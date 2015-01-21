@@ -25,6 +25,15 @@ public abstract class PathfindingAlgorithm {
      * Reitinetsinnän aloitus- ja lopetuspisteet
      */
     protected Point start, goal;
+    
+    protected boolean stopped;
+    
+    /**
+     * Keskeyttää algoritmin toiminnan.
+     */
+    public void stop() {
+        stopped = true;
+    }
 
     /**
      * Alustaa algoritmin. Kutsuttava ennen search-metodin kutsumista.
@@ -37,6 +46,7 @@ public abstract class PathfindingAlgorithm {
         this.graph = new Graph(graph);
         this.start = start;
         this.goal = goal;
+        stopped = false;
         init();
     }
 

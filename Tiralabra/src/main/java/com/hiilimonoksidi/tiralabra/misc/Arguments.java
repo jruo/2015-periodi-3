@@ -18,7 +18,7 @@ public class Arguments {
      *
      * @return Argumenttien lukumäärä
      */
-    public int length() {
+    public int getLength() {
         return args.length;
     }
 

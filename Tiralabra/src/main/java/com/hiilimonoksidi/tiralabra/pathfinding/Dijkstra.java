@@ -60,7 +60,7 @@ public class Dijkstra extends PathfindingAlgorithm {
         int gx = goal.x;
         int gy = goal.y;
 
-        while (!nodes.isEmpty()) {
+        while (!nodes.isEmpty() && !stopped) {
             Node current = nodes.poll();
             checked.add(current);
 

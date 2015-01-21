@@ -18,28 +18,28 @@ public class AStar extends PathfindingAlgorithm {
     /**
      * Etäisyys tietystä solmusta alkupisteeseen.
      */
-    private float[][] g;
+    protected float[][] g;
 
     /**
      * Arvioitu etäisyys tietystä solmusta maaliin plus sen solmun g-arvo.
      */
-    private float[][] f;
+    protected float[][] f;
 
     /**
      * Joukko, joka sisältää jo tutkitut solmut.
      */
-    private Set<Node> closed;
+    protected Set<Node> closed;
 
     /**
      * Joukko, joka sisältää aina samat solmut kuin openQueue. Nopeuttaa
      * sisältyvyyden tarkistusta.
      */
-    private Set<Node> open;
+    protected Set<Node> open;
 
     /**
      * Prioriteettijono, joka sisältää solmut, jotka odottavat tutkimisvuoroa.
      */
-    private PriorityQueue<Node> openQueue;
+    protected PriorityQueue<Node> openQueue;
 
     @Override
     public void init() {
@@ -60,7 +60,7 @@ public class AStar extends PathfindingAlgorithm {
         int gx = goal.x;
         int gy = goal.y;
 
-        while (!openQueue.isEmpty()) {
+        while (!openQueue.isEmpty() && !stopped) {
             Node current = openQueue.poll();
 
             open.remove(current);
@@ -105,7 +105,7 @@ public class AStar extends PathfindingAlgorithm {
      * Vertailee kahden solmun järjestystä. Ensimmäinen solmu on se, jonka
      * kautta kulkee lyhempi matka alusta maaliin (pienempi f).
      */
-    private class NodeComparator implements Comparator<Node> {
+    class NodeComparator implements Comparator<Node> {
 
         @Override
         public int compare(Node o1, Node o2) {

@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
         Arguments arguments = new Arguments(args);
 
-        if (arguments.length() == 0) {
+        if (arguments.getLength() == 0) {
             // new GUIApplication()?
         } else {
             String inputFile = arguments.getArgument("-i");

@@ -59,7 +59,7 @@ public class CLIApplication {
         Path path = tester.getPath();
         if (path != null) {
             System.out.println("Path found!");
-            System.out.println("Path length: " + path.getLength());
+            System.out.printf("Path length: %.2f\n", path.getLength());
             if (outputFolder != null) {
                 PathImageWriter.write(outputFolder, image, path, algorithm);
             }
@@ -81,7 +81,7 @@ public class CLIApplication {
         AlgorithmTester tester = new AlgorithmTester(algorithm.getInstance(), graph, start, goal);
         tester.start(timeout);
 
-        System.out.println("Time elapsed: " + tester.getTimeElapsed() + " ms");
+        System.out.printf("Time elapsed: %.0f ms\n", tester.getTimeElapsed());
         return tester;
     }
 

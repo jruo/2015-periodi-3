@@ -5,6 +5,8 @@ import com.hiilimonoksidi.tiralabra.graph.Path;
 import com.hiilimonoksidi.tiralabra.misc.Point;
 import com.hiilimonoksidi.tiralabra.misc.Timer;
 import com.hiilimonoksidi.tiralabra.pathfinding.PathfindingAlgorithm;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Testaaja algoritmille.
@@ -34,18 +36,22 @@ public class AlgorithmTester implements Runnable {
      * pysäytetään. 0 = ei rajoitusta.
      */
     public void start(int timeout) {
-        Thread thread = new Thread(this);
-
-        timer.start();
         try {
+            Thread thread = new Thread(this);
+
+            timer.start();
             thread.start();
             thread.join(timeout * 1000);
+            timer.stop();
+
+            if (thread.isAlive()) {
+                System.out.println("Time limit exceeded.");
+                algorithm.stop();
+                thread.join();
+            }
         } catch (InterruptedException ex) {
-        }
-        timer.stop();
-        
-        if (thread.isAlive()) {
-            System.out.println("Time limit exceeded.");
+            Logger.getLogger(AlgorithmTester.class.getName()).log(Level.SEVERE, null, ex);
+            System.exit(1);
         }
     }
 

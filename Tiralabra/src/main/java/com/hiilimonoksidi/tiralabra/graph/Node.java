@@ -4,7 +4,7 @@ import com.hiilimonoksidi.tiralabra.misc.Point;
 
 /**
  * Verkon solmu.
- * 
+ *
  * @author Janne Ruoho
  */
 public class Node {
@@ -13,12 +13,12 @@ public class Node {
      * Solmun sijainti verkossa
      */
     public final int x, y;
-    
+
     /**
      * Onko solmu vapaa vai este
      */
     public final boolean clear;
-    
+
     /**
      * Solmu, josta saavuttiin tähän
      */
@@ -29,10 +29,10 @@ public class Node {
         this.y = y;
         this.clear = empty;
     }
-    
+
     /**
      * Kopioi anneton solmun.
-     * 
+     *
      * @param node Kopioitava solmu
      */
     public Node(Node node) {
@@ -40,7 +40,7 @@ public class Node {
         y = node.y;
         clear = node.clear;
     }
-    
+
     public void setParent(Node node) {
         parent = node;
     }
@@ -60,8 +60,8 @@ public class Node {
     public boolean isClear() {
         return clear;
     }
-    
+
     public Point getLocation() {
         return new Point(x, y);
-    }    
+    }
 }
