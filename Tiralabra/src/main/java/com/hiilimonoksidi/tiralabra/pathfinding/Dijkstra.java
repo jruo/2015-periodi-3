@@ -72,6 +72,9 @@ public class Dijkstra extends PathfindingAlgorithm {
             }
 
             for (Node neighbor : graph.getNeighbors(current)) {
+                if (neighbor == null) {
+                    continue;
+                }
                 if (!checked.contains(neighbor)) {
                     int nx = neighbor.x;
                     int ny = neighbor.y;

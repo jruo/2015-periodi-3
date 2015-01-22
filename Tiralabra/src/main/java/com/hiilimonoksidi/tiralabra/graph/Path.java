@@ -12,9 +12,9 @@ import java.util.List;
  */
 public class Path {
 
-    private final float SQRT_2 = 1.41421356237f;
-    private final List<Point> points;
-    private float length = -1;
+    protected final float SQRT_2 = 1.41421356237f;
+    protected final List<Point> points;
+    protected float length = -1;
 
     public Path() {
         points = new ArrayList<>();

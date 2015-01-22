@@ -74,7 +74,7 @@ public class AStar extends PathfindingAlgorithm {
             }
 
             for (Node neighbor : graph.getNeighbors(cx, cy)) {
-                if (closed.contains(neighbor)) {
+                if (neighbor == null || closed.contains(neighbor)) {
                     continue;
                 }
 

@@ -2,8 +2,6 @@ package com.hiilimonoksidi.tiralabra.graph;
 
 import com.hiilimonoksidi.tiralabra.misc.Direction;
 import com.hiilimonoksidi.tiralabra.misc.Point;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Verkko, tai oikeastaan ruudukko, jonka jokainen vapaa solmu on yhteydessä
@@ -21,17 +19,17 @@ public class Graph {
         height = nodes.length;
         width = nodes[0].length;
     }
-    
+
     /**
      * Kopioi annetun verkon.
-     * 
+     *
      * @param graph Kopioitava verkko
      */
     public Graph(Graph graph) {
         width = graph.width;
         height = graph.height;
         nodes = new Node[height][width];
-        
+
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 nodes[j][i] = new Node(graph.nodes[j][i]);
@@ -44,17 +42,26 @@ public class Graph {
     }
 
     /**
-     * Palauttaa solmun annetussa sijainnissa.
+     * Palauttaa solmun annetussa sijainnissa. Jos sijainti on verkon
+     * ulkopuolella, palauttaa aina solmun joka ei ole vapaa.
      *
      * @param p Solmun sijainti
      * @return Solmu sijainnissa p
      */
     public Node get(Point p) {
-        return nodes[p.y][p.x];
+        if (isValidNode(p.x, p.y)) {
+            return nodes[p.y][p.x];
+        } else {
+            return new Node(p.x, p.y, false);
+        }
     }
 
     public Node get(int x, int y) {
-        return nodes[y][x];
+        if (isValidNode(x, y)) {
+            return nodes[y][x];
+        } else {
+            return new Node(x, y, false);
+        }
     }
 
     /**
@@ -63,13 +70,13 @@ public class Graph {
      * @param node Solmu, jonka naapurit halutaan
      * @return Lista naapureista
      */
-    public List<Node> getNeighbors(Node node) {
+    public Node[] getNeighbors(Node node) {
         return getNeighbors(node.x, node.y);
     }
 
-    public List<Node> getNeighbors(int x, int y) {
-        List<Node> neighbors = new ArrayList<>();
-        
+    public Node[] getNeighbors(int x, int y) {
+        Node[] neighbors = new Node[8];
+
         if (!nodes[y][x].clear) {
             return neighbors;
         }
@@ -89,33 +96,92 @@ public class Graph {
         boolean westClear = false;
 
         if (north != null && north.clear) {
-            neighbors.add(north);
+            neighbors[0] = north;
             northClear = true;
         }
         if (east != null && east.clear) {
-            neighbors.add(east);
+            neighbors[1] = east;
             eastClear = true;
         }
         if (south != null && south.clear) {
-            neighbors.add(south);
+            neighbors[2] = south;
             southClear = true;
         }
         if (west != null && west.clear) {
-            neighbors.add(west);
+            neighbors[3] = west;
             westClear = true;
         }
 
         if (northeast != null && northeast.clear && (northClear || eastClear)) {
-            neighbors.add(northeast);
+            neighbors[4] = northeast;
         }
         if (northwest != null && northwest.clear && (northClear || westClear)) {
-            neighbors.add(northwest);
+            neighbors[5] = northwest;
         }
         if (southeast != null && southeast.clear && (southClear || eastClear)) {
-            neighbors.add(southeast);
+            neighbors[6] = southeast;
         }
         if (southwest != null && southwest.clear && (southClear || westClear)) {
-            neighbors.add(southwest);
+            neighbors[7] = southwest;
+        }
+
+        return neighbors;
+    }
+
+    public Node[] getJumpableNeighbors(Node node, Direction jumpDirection) {
+        return getJumpableNeighbors(node.x, node.y, jumpDirection);
+    }
+
+    public Node[] getJumpableNeighbors(int x, int y, Direction jumpDirection) {
+        Node[] neighbors = new Node[5];
+
+        int dx = jumpDirection.dx;
+        int dy = jumpDirection.dy;
+
+        // Pysty- ja vaakasuunta
+        if (dx == 0 || dy == 0) {
+            if (!get(x + dx, y + dy).clear) {
+                return neighbors;
+            }
+
+            int lx = dy;       // Vasen x
+            int ly = -dx;      // Vasen y
+            int rx = -dy;      // Oikea x
+            int ry = dx;       // Oikea y
+            int lfx = dx + dy; // Vasen eteen x
+            int lfy = dy - dx; // Vasen eteen y
+            int rfx = dx - dy; // Oikea eteen x
+            int rfy = dx + dy; // Oikea eteen y
+
+            if (!get(x + lx, y + ly).clear && get(x + lfx, y + lfy).clear) {
+                neighbors[0] = nodes[y + lfy][x + lfx];
+            }
+            if (!get(x + rx, y + ry).clear && get(x + rfx, y + rfy).clear) {
+                neighbors[1] = nodes[y + rfy][x + rfx];
+            }
+            neighbors[2] = nodes[y + dy][x + dx];
+            
+        } else {
+            boolean hClear = false;
+            boolean vClear = false;
+
+            if (get(x, y + dy).clear) {
+                neighbors[0] = nodes[y + dy][x];
+                vClear = true;
+            }
+            if (get(x + dx, y).clear) {
+                neighbors[1] = nodes[y][x + dx];
+                hClear = true;
+            }
+            if ((hClear || vClear) && get(x + dx, y + dy).clear) {
+                neighbors[2] = nodes[y + dy][x + dx];
+            }
+            if (hClear && !get(x, y - dy).clear && get(x + dx, y - dy).clear) {
+                neighbors[3] = nodes[y - dy][x + dx];
+            }
+            if (vClear && !get(x - dx, y).clear && get(x - dx, y + dy).clear) {
+                neighbors[4] = nodes[y + dy][x - dx];
+            }
         }
 
         return neighbors;
