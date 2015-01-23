@@ -86,7 +86,8 @@ public abstract class PathfindingAlgorithm {
     public enum Type {
 
         A_STAR(AStar.class, "A*"),
-        DIJKSTRA(Dijkstra.class, "Dijkstra");
+        DIJKSTRA(Dijkstra.class, "Dijkstra"),
+        JUMP_POINT_SEARCH(JumpPointSearch.class, "Jump point search");
 
         private final Class<? extends PathfindingAlgorithm> clazz;
         private final String name;
