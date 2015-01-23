@@ -1,5 +1,6 @@
 package com.hiilimonoksidi.tiralabra.pathfinding;
 
+import com.hiilimonoksidi.tiralabra.graph.JumpPointPath;
 import com.hiilimonoksidi.tiralabra.graph.Node;
 import com.hiilimonoksidi.tiralabra.graph.Path;
 import com.hiilimonoksidi.tiralabra.misc.Calc;
@@ -109,6 +110,6 @@ public class JumpPointSearch extends AStar {
 
     @Override
     public Path reconstructPath(Node goal) {
-        return super.reconstructPath(goal);
+        return reconstructPath(goal, new JumpPointPath());
     }
 }

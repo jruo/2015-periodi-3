@@ -71,7 +71,10 @@ public abstract class PathfindingAlgorithm {
      * @return Polku annetusta solmusta aloituspisteen solmuun.
      */
     protected Path reconstructPath(Node goal) {
-        Path path = new Path();
+        return reconstructPath(goal, new Path());
+    }
+    
+    protected Path reconstructPath(Node goal, Path path) {
         path.addPoint(goal.getLocation());
 
         Node parent = goal.getParent();
