@@ -199,6 +199,36 @@ public class Graph {
         return neighbors;
     }
 
+    public boolean hasForcedNeighbors(Node node, Direction direction) {
+        return hasForcedNeighbors(node.x, node.y, direction);
+    }
+
+    public boolean hasForcedNeighbors(int x, int y, Direction direction) {
+        int dx = direction.dx;
+        int dy = direction.dy;
+        
+        if (dx == 0 || dy == 0) {
+            if (dx == 0) {
+                if ((get(x + 1, y + dy).clear && !get(x + 1, y).clear)
+                    || get(x - 1, y + dy).clear && !get(x - 1, y).clear) {
+                    return true;
+                }
+            } else {
+                if ((get(x + dx, y + 1).clear && !get(x, y + 1).clear)
+                    || get(x + dx, y - 1).clear && !get(x, y - 1).clear) {
+                    return true;
+                }
+            }
+        } else {
+            if ((get(x - dx, y + dy).clear && !get(x - dx, y).clear)
+                || get(x + dx, y - dx).clear && !get(x, y - dy).clear) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
     /**
      * Palauttaa solmun (x, y) naapurisolmun suunnassa dir.
      *

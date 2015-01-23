@@ -31,7 +31,7 @@ public class Node {
     }
 
     /**
-     * Kopioi anneton solmun.
+     * Kopioi annetun solmun.
      *
      * @param node Kopioitava solmu
      */

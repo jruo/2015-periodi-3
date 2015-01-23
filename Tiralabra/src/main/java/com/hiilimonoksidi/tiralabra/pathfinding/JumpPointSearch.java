@@ -73,7 +73,7 @@ public class JumpPointSearch extends AStar {
 
     private Node jump(int x, int y, Direction direction) {
         Node current = graph.get(x, y);
-        
+
         if (x == goal.x && y == goal.y) {
             return current;
         }
@@ -81,50 +81,29 @@ public class JumpPointSearch extends AStar {
         int dx = direction.dx;
         int dy = direction.dy;
 
-        if (dx == 0 || dy == 0) { // Pysty/vaakasuuntainen hyppy
-            if (dx == 0) {
-                // Forced neighbor?
-                if ((graph.get(x + 1, y + dy).clear && !graph.get(x + 1, y).clear)
-                    || graph.get(x - 1, y + dy).clear && !graph.get(x - 1, y).clear) {
-                    return current;
-                }
-            } else {
-                // Forced neighbor?
-                if ((graph.get(x + dx, y + 1).clear && !graph.get(x, y + 1).clear)
-                    || graph.get(x + dx, y - 1).clear && !graph.get(x, y - 1).clear) {
-                    return current;
-                }
-            }
+        if (graph.hasForcedNeighbors(x, y, direction)) {
+            return current;
+        }
 
-            // Jatketaan hyppyä
-            if (graph.get(x + dx, y + dy).clear) {
-                return jump(x + dx, y + dy, Direction.getDirection(0, 0, dx, dy));
-            }
+        boolean continueJump;
 
-        } else { // Diagonaalinen hyppy
-
-            // Forced neighbor?
-            if ((graph.get(x - dx, y + dy).clear && !graph.get(x - dx, y).clear)
-                || graph.get(x + dx, y - dx).clear && !graph.get(x, y - dy).clear) {
-                return current;
-            }
-
-            // Hypätään vaakaan ja pystyyn
+        if (dx != 0 && dy != 0) {
             Node hJump = jump(x + dx, y, Direction.getDirection(0, 0, dx, 0));
             Node vJump = jump(x, y + dy, Direction.getDirection(0, 0, 0, dy));
 
-            // Jos vaaka/pystyhypyt löysivät jotain, tämä solmu on mielenkiintoinen
             if (hJump != null || vJump != null) {
                 return current;
             }
 
-            // Jatketaan hyppyä
-            if (graph.get(x + dx, y).clear || graph.get(x, y + dy).clear) {
-                return jump(x + dx, y + dy, Direction.getDirection(0, 0, dx, dy));
-            }
+            continueJump = graph.get(x + dx, y).clear || graph.get(x, y + dy).clear;
+        } else {
+            continueJump = graph.get(x + dx, y + dy).clear;
         }
-
-        // Törmättiin seinään
+        
+        if (continueJump) {
+            return jump(x + dx, y + dy, Direction.getDirection(0, 0, dx, dy));
+        }
+        
         return null;
     }
 
