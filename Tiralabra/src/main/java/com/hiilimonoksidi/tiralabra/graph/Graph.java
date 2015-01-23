@@ -128,11 +128,23 @@ public class Graph {
         return neighbors;
     }
 
+    /**
+     * Palauttaa kaikki solmut, joita tulisi tarkastella jump point searchissa
+     * hypetässä annetusta solmusta annettuun suuntaan.
+     *
+     * @param node Solmu, jonka naapureita tarkastellaan
+     * @param jumpDirection Suunta, johon halutaan hypätä
+     * @return Lista naapureista joiden suuntiin tulisi hypätä
+     */
     public Node[] getJumpableNeighbors(Node node, Direction jumpDirection) {
         return getJumpableNeighbors(node.x, node.y, jumpDirection);
     }
 
     public Node[] getJumpableNeighbors(int x, int y, Direction jumpDirection) {
+        if (jumpDirection == null) {
+            return getNeighbors(x, y);
+        }
+
         Node[] neighbors = new Node[5];
 
         int dx = jumpDirection.dx;
@@ -160,7 +172,7 @@ public class Graph {
                 neighbors[1] = nodes[y + rfy][x + rfx];
             }
             neighbors[2] = nodes[y + dy][x + dx];
-            
+
         } else {
             boolean hClear = false;
             boolean vClear = false;

@@ -33,4 +33,17 @@ public enum Direction {
     public int getDy() {
         return dy;
     }
+    
+    public static Direction getDirection(int x1, int y1, int x2, int y2) {
+        if (x1 == x2) {
+            return y1 < y2 ? SOUTH : NORTH;
+        }
+        if (y1 == y2) {
+            return x1 < x2 ? EAST : WEST;
+        }
+        if (x1 < x2) {
+            return y1 < y2 ? SOUTHEAST : NORTHEAST;
+        }
+        return y1 < y2 ? SOUTHWEST : NORTHWEST;
+    }
 }

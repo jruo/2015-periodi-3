@@ -21,7 +21,6 @@ public class GraphTest {
     private Graph g;
 
     // <editor-fold defaultstate="collapsed" desc="JSP-naapurien testaus">
-    
     // Hyppy ylös
     private int[][][] n1 = {
         {{0, 0, 0},
@@ -119,7 +118,7 @@ public class GraphTest {
          {0, 0, 0},
          {0, 0, 0}}
     };
-    
+
     // Hyppy oikealle
     private int[][][] e1 = {
         {{0, 0, 0},
@@ -169,11 +168,112 @@ public class GraphTest {
          {0, 0, 0},
          {0, 0, 0}}
     };
+
+    // Hyppy ylös vasemmalle
+    private int[][][] nw1 = {
+        {{0, 0, 0},
+         {0, 0, 0},
+         {0, 0, 0}},
+        {{1, 1, 0},
+         {1, 0, 0},
+         {0, 0, 0}}
+    };
+    private int[][][] nw2 = {
+        {{0, 1, 0},
+         {0, 0, 0},
+         {0, 0, 0}},
+        {{1, 0, 0},
+         {1, 0, 0},
+         {0, 0, 0}}
+    };
+    private int[][][] nw3 = {
+        {{0, 0, 0},
+         {0, 0, 1},
+         {0, 0, 0}},
+        {{1, 1, 1},
+         {1, 0, 0},
+         {0, 0, 0}}
+    };
+    private int[][][] nw4 = {
+        {{0, 0, 0},
+         {0, 0, 0},
+         {0, 1, 0}},
+        {{1, 1, 0},
+         {1, 0, 0},
+         {1, 0, 0}}
+    };
+    private int[][][] nw5 = {
+        {{1, 0, 0},
+         {0, 0, 0},
+         {0, 0, 0}},
+        {{0, 1, 0},
+         {1, 0, 0},
+         {0, 0, 0}}
+    };
+    private int[][][] nw6 = {
+        {{0, 1, 0},
+         {1, 0, 0},
+         {0, 0, 0}},
+        {{0, 0, 0},
+         {0, 0, 0},
+         {0, 0, 0}}
+    };
+    private int[][][] nw7 = {
+        {{0, 0, 0},
+         {0, 0, 1},
+         {0, 1, 0}},
+        {{1, 1, 1},
+         {1, 0, 0},
+         {1, 0, 0}}
+    };
+    private int[][][] nw8 = {
+        {{0, 1, 0},
+         {0, 0, 1},
+         {0, 0, 0}},
+        {{1, 0, 0},
+         {1, 0, 0},
+         {0, 0, 0}}
+    };
     
+    // Hyppy alas vasemmalle
+    private int[][][] sw1 = {
+        {{0, 0, 0},
+         {0, 0, 0},
+         {0, 0, 0}},
+        {{0, 0, 0},
+         {1, 0, 0},
+         {1, 1, 0}}
+    };
+    private int[][][] sw2 = {
+        {{0, 0, 0},
+         {0, 0, 0},
+         {1, 0, 0}},
+        {{0, 0, 0},
+         {1, 0, 0},
+         {0, 1, 0}}
+    };
+    private int[][][] sw3 = {
+        {{0, 1, 0},
+         {0, 0, 0},
+         {0, 0, 0}},
+        {{1, 0, 0},
+         {1, 0, 0},
+         {1, 1, 0}}
+    };
+    private int[][][] sw4 = {
+        {{0, 1, 0},
+         {0, 0, 1},
+         {1, 0, 0}},
+        {{1, 0, 0},
+         {1, 0, 0},
+         {0, 1, 1}}
+    };
+
     // </editor-fold>
-    
     private int[][][][] ns = {n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12};
     private int[][][][] es = {e1, e2, e3, e4, e5, e6};
+    private int[][][][] nws = {nw1, nw2, nw3, nw4, nw5, nw6, nw7, nw8};
+    private int[][][][] sws = {sw1, sw2, sw3, sw4};
 
     @Before
     public void setUp() throws Exception {
@@ -232,7 +332,7 @@ public class GraphTest {
             checkJumpableNeighborsAtDirection(ag, at, Direction.NORTH);
         }
     }
-    
+
     @Test
     public void testGetJumpableNeighborsES() {
         for (int[][][] a : es) {
@@ -240,6 +340,26 @@ public class GraphTest {
             int[][] at = a[1];
 
             checkJumpableNeighborsAtDirection(ag, at, Direction.EAST);
+        }
+    }
+
+    @Test
+    public void testGetJumpableNeighborsNWS() {
+        for (int[][][] a : nws) {
+            int[][] ag = a[0];
+            int[][] at = a[1];
+
+            checkJumpableNeighborsAtDirection(ag, at, Direction.NORTHWEST);
+        }
+    }
+    
+    @Test
+    public void testGetJumpableNeighborsSWS() {
+        for (int[][][] a : sws) {
+            int[][] ag = a[0];
+            int[][] at = a[1];
+
+            checkJumpableNeighborsAtDirection(ag, at, Direction.SOUTHWEST);
         }
     }
 
