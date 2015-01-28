@@ -1,6 +1,8 @@
 package com.hiilimonoksidi.tiralabra.datastructures;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -103,5 +105,16 @@ public class ArrayListTest {
         assertEquals(14, list.size());
         assertEquals("4", list.get(3));
         assertEquals("6", list.get(4));
+    }
+
+    @Test
+    public void testIsEmpty() {
+        assertTrue(list.isEmpty());
+        list.add("1");
+        assertFalse(list.isEmpty());
+        list.add("2");
+        list.remove("1");
+        list.remove("2");
+        assertTrue(list.isEmpty());
     }
 }
