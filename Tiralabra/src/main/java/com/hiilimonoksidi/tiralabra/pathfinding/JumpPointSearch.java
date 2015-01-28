@@ -6,8 +6,16 @@ import com.hiilimonoksidi.tiralabra.graph.Path;
 import com.hiilimonoksidi.tiralabra.misc.Calc;
 import com.hiilimonoksidi.tiralabra.misc.Direction;
 
+/**
+ * Jump point search, optimoitu versio A*:sta.
+ *
+ * @author Janne Ruoho
+ */
 public class JumpPointSearch extends AStar {
 
+    /**
+     * Suunta, josta saavuttiin tiettyyn solmuun
+     */
     private Direction[][] jumpDirections;
 
     @Override
@@ -72,6 +80,18 @@ public class JumpPointSearch extends AStar {
         return null;
     }
 
+    /**
+     * Suorittaa rekursiivisesti hypyn annetuista koordinaateista annettuun
+     * suuntaan.
+     *
+     * @param x Hypättävän kohdan x-koordinaatti
+     * @param y Hypättävän kohdan y-koordinaatti
+     * @param direction Hypättävä suunta
+     * @return Jos hyppy löysi kiinnostavan solmun (maalin tai pakotetun
+     * naapurin), palauttaa solmun jota kautta pääsee kyseiseen solmuun. Jos
+     * hyppy ei löytänyt mielenkiintoista solmua (törmäsi suoraan seinään tai
+     * verkon reunaan), palauttaa null.
+     */
     private Node jump(int x, int y, Direction direction) {
         Node current = graph.get(x, y);
 
@@ -100,11 +120,11 @@ public class JumpPointSearch extends AStar {
         } else {
             continueJump = graph.get(x + dx, y + dy).clear;
         }
-        
+
         if (continueJump) {
             return jump(x + dx, y + dy, Direction.getDirection(0, 0, dx, dy));
         }
-        
+
         return null;
     }
 

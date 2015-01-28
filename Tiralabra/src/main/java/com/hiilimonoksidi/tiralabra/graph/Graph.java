@@ -199,6 +199,15 @@ public class Graph {
         return neighbors;
     }
 
+    /**
+     * Tarkistaa, onko annetulla solmulla 'pakotettuja naapureita' eli
+     * naapureita, jotka JPS:ssä normaalisti käydään toisen solmun toimesta
+     * läpi, mutta esteen takia nykyinen solmu on pakotettu käymään se läpi.
+     *
+     * @param node Tarkistettava solmu
+     * @param direction Suunta, josta tarkistetaan naapurit
+     * @return Tosi jos naapureita on, false muutoin
+     */
     public boolean hasForcedNeighbors(Node node, Direction direction) {
         return hasForcedNeighbors(node.x, node.y, direction);
     }
@@ -206,7 +215,7 @@ public class Graph {
     public boolean hasForcedNeighbors(int x, int y, Direction direction) {
         int dx = direction.dx;
         int dy = direction.dy;
-        
+
         if (dx == 0 || dy == 0) {
             if (dx == 0) {
                 if ((get(x + 1, y + dy).clear && !get(x + 1, y).clear)
@@ -225,7 +234,7 @@ public class Graph {
                 return true;
             }
         }
-        
+
         return false;
     }
 

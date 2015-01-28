@@ -2,7 +2,7 @@ package com.hiilimonoksidi.tiralabra.misc;
 
 /**
  * Suunta.
- * 
+ *
  * @author Janne Ruoho
  */
 public enum Direction {
@@ -33,7 +33,18 @@ public enum Direction {
     public int getDy() {
         return dy;
     }
-    
+
+    /**
+     * Palauttaa suunnan, joka vastaa suuntavektoria [x2-x1, y2-y1]. Jos
+     * suuntavektori ei ole yhdensuuntainen minkään suunnan kanssa, saattaa
+     * palauttaa oikean tai sitten väärän tuloksen.
+     *
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     * @return Vastaava suunta
+     */
     public static Direction getDirection(int x1, int y1, int x2, int y2) {
         if (x1 == x2) {
             return y1 < y2 ? SOUTH : NORTH;
