@@ -29,7 +29,7 @@ public class ArrayList<T> {
         if (index >= length) {
             grow();
         }
-        
+
         elements[index++] = t;
     }
 
@@ -81,7 +81,11 @@ public class ArrayList<T> {
 
         return (T) elements[i];
     }
-    
+
+    public boolean isEmpty() {
+        return index == 0;
+    }
+
     /**
      * Kasvattaa listan koon kaksinkertaiseksi.
      */

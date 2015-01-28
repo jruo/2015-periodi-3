@@ -1,5 +1,6 @@
 package com.hiilimonoksidi.tiralabra.misc;
 
+import com.hiilimonoksidi.tiralabra.datastructures.ArrayList;
 import com.hiilimonoksidi.tiralabra.graph.Path;
 import com.hiilimonoksidi.tiralabra.pathfinding.PathfindingAlgorithm;
 import java.awt.Color;
@@ -60,8 +61,11 @@ public class PathImageWriter {
      */
     private static void drawPath(Path path, BufferedImage image) {
         int red = Color.RED.getRGB();
-        for (Point point : path.getPoints()) {
-            image.setRGB(point.x, point.y, red);
+
+        ArrayList<Point> points = path.getPoints();
+        for (int i = 0; i < points.size(); i++) {
+            Point p = points.get(i);
+            image.setRGB(p.x, p.y, red);
         }
     }
 

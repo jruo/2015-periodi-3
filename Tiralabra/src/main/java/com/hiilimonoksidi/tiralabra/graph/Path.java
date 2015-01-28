@@ -1,8 +1,7 @@
 package com.hiilimonoksidi.tiralabra.graph;
 
+import com.hiilimonoksidi.tiralabra.datastructures.ArrayList;
 import com.hiilimonoksidi.tiralabra.misc.Point;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Polku, joka koostuu pisteistä. Käytetään reitinensintäalgoritmien tuloksen
@@ -13,7 +12,7 @@ import java.util.List;
 public class Path {
 
     protected final float SQRT_2 = 1.41421356237f;
-    protected final List<Point> points;
+    protected final ArrayList<Point> points;
     protected float length = -1;
 
     public Path() {
@@ -24,7 +23,7 @@ public class Path {
         points.add(p);
     }
 
-    public List<Point> getPoints() {
+    public ArrayList<Point> getPoints() {
         return points;
     }
 
