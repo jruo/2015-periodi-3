@@ -90,10 +90,11 @@ public class AStar extends PathfindingAlgorithm {
                     g[ny][nx] = gNeighbor;
                     f[ny][nx] = gNeighbor + Calc.dist(nx, ny, gx, gy);
 
-                    if (!neighborOpen) {
-                        openQueue.offer(neighbor);
-                        open.add(neighbor);
+                    if (neighborOpen) {
+                        openQueue.remove(neighbor);
                     }
+                    openQueue.offer(neighbor);
+                    open.add(neighbor);
                 }
             }
         }

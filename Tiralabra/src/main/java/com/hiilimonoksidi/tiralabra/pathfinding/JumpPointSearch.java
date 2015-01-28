@@ -1,5 +1,6 @@
 package com.hiilimonoksidi.tiralabra.pathfinding;
 
+import com.hiilimonoksidi.tiralabra.graph.JumpPointPath;
 import com.hiilimonoksidi.tiralabra.graph.Node;
 import com.hiilimonoksidi.tiralabra.graph.Path;
 import com.hiilimonoksidi.tiralabra.misc.Calc;
@@ -30,12 +31,16 @@ public class JumpPointSearch extends AStar {
 
             int cx = current.x;
             int cy = current.y;
-            
+
             if (cx == gx && cy == gy) {
                 return reconstructPath(current);
             }
 
-            for (Node neighbor : graph.getJumpableNeighbors(cx, cx, jumpDirections[cy][cx])) {
+            for (Node neighbor : graph.getJumpableNeighbors(cx, cy, jumpDirections[cy][cx])) {
+                if (neighbor == null) {
+                    continue;
+                }
+
                 Direction neighborDirection = Direction.getDirection(cx, cy, neighbor.x, neighbor.y);
 
                 Node jumped = jump(neighbor.x, neighbor.y, neighborDirection);
@@ -48,14 +53,17 @@ public class JumpPointSearch extends AStar {
 
                     boolean jumpedOpen = open.contains(jumped);
                     if (!jumpedOpen || gJumped < g[jy][jx]) {
+                        jumped.setParent(current);
+
                         g[jy][jx] = gJumped;
                         f[jy][jx] = gJumped + Calc.dist(jx, jy, gx, gy);
                         jumpDirections[jy][jx] = neighborDirection;
-                        
-                        if (!jumpedOpen) {
-                            openQueue.offer(jumped);
-                            open.add(jumped);
+
+                        if (jumpedOpen) {
+                            openQueue.remove(jumped);
                         }
+                        openQueue.offer(jumped);
+                        open.add(jumped);
                     }
                 }
             }
@@ -65,11 +73,43 @@ public class JumpPointSearch extends AStar {
     }
 
     private Node jump(int x, int y, Direction direction) {
+        Node current = graph.get(x, y);
+
+        if (x == goal.x && y == goal.y) {
+            return current;
+        }
+
+        int dx = direction.dx;
+        int dy = direction.dy;
+
+        if (graph.hasForcedNeighbors(x, y, direction)) {
+            return current;
+        }
+
+        boolean continueJump;
+
+        if (dx != 0 && dy != 0) {
+            Node hJump = jump(x + dx, y, Direction.getDirection(0, 0, dx, 0));
+            Node vJump = jump(x, y + dy, Direction.getDirection(0, 0, 0, dy));
+
+            if (hJump != null || vJump != null) {
+                return current;
+            }
+
+            continueJump = graph.get(x + dx, y).clear || graph.get(x, y + dy).clear;
+        } else {
+            continueJump = graph.get(x + dx, y + dy).clear;
+        }
+        
+        if (continueJump) {
+            return jump(x + dx, y + dy, Direction.getDirection(0, 0, dx, dy));
+        }
+        
         return null;
     }
-    
+
     @Override
     public Path reconstructPath(Node goal) {
-        return null;
+        return reconstructPath(goal, new JumpPointPath());
     }
 }

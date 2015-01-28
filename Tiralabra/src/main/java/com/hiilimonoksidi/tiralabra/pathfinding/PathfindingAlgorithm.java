@@ -71,7 +71,10 @@ public abstract class PathfindingAlgorithm {
      * @return Polku annetusta solmusta aloituspisteen solmuun.
      */
     protected Path reconstructPath(Node goal) {
-        Path path = new Path();
+        return reconstructPath(goal, new Path());
+    }
+    
+    protected Path reconstructPath(Node goal, Path path) {
         path.addPoint(goal.getLocation());
 
         Node parent = goal.getParent();
@@ -86,7 +89,8 @@ public abstract class PathfindingAlgorithm {
     public enum Type {
 
         A_STAR(AStar.class, "A*"),
-        DIJKSTRA(Dijkstra.class, "Dijkstra");
+        DIJKSTRA(Dijkstra.class, "Dijkstra"),
+        JUMP_POINT_SEARCH(JumpPointSearch.class, "Jump point search");
 
         private final Class<? extends PathfindingAlgorithm> clazz;
         private final String name;
