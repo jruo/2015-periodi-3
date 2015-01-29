@@ -4,9 +4,9 @@ package com.hiilimonoksidi.tiralabra.datastructures;
  * Lista.
  *
  * @author Janne Ruoho
- * @param <T> Listaan talletettavien olioiden tyyppi
+ * @param <E> Listaan talletettavien elementtien tyyppi
  */
-public class ArrayList<T> {
+public class ArrayList<E> {
 
     private Object[] elements;
     private int length = 10;
@@ -17,12 +17,12 @@ public class ArrayList<T> {
     }
 
     /**
-     * Lisää listaan olion.
+     * Lisää elementin listaan.
      *
-     * @param t Lisättävä olio
+     * @param element Lisättävä olio
      */
-    public void add(T t) {
-        if (t == null) {
+    public void add(E element) {
+        if (element == null) {
             throw new NullPointerException("Can't add null to the list");
         }
 
@@ -30,22 +30,22 @@ public class ArrayList<T> {
             grow();
         }
 
-        elements[index++] = t;
+        elements[index++] = element;
     }
 
     /**
-     * Poistaa listasta olion.
+     * Poistaa elementin listasta.
      *
-     * @param t Poistettava olio
+     * @param element Poistettava olio
      */
-    public void remove(T t) {
-        if (t == null) {
+    public void remove(E element) {
+        if (element == null) {
             return;
         }
 
         int removeIndex = 0;
         for (int i = 0; i < index; i++) {
-            if (t.equals(elements[i])) {
+            if (element.equals(elements[i])) {
                 removeIndex = i;
                 break;
             }
@@ -60,7 +60,7 @@ public class ArrayList<T> {
     }
 
     /**
-     * Palauttaa listan koon.
+     * Palauttaa listan elementtien lukumäärän.
      *
      * @return Listan koko
      */
@@ -69,19 +69,24 @@ public class ArrayList<T> {
     }
 
     /**
-     * Palauttaa tietyn olion listasta.
+     * Palauttaa tietyn elementin listasta.
      *
      * @param i Olion indeksi
      * @return Olio indeksissä i
      */
-    public T get(int i) {
+    public E get(int i) {
         if (i >= index || i < 0) {
             throw new ArrayIndexOutOfBoundsException("index: " + i);
         }
 
-        return (T) elements[i];
+        return (E) elements[i];
     }
 
+    /**
+     * Tarkistaa onko lista tyhjä.
+     *
+     * @return Tosi jos tyhjä, epätosi muuten
+     */
     public boolean isEmpty() {
         return index == 0;
     }
