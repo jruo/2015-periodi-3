@@ -81,7 +81,7 @@ public class CLIApplication {
         AlgorithmTester tester = new AlgorithmTester(algorithm.getInstance(), graph, start, goal);
         try {
             tester.start(timeout);
-        } catch (AlgorithmTimeoutExcpetion ex) {
+        } catch (AlgorithmTimeoutException ex) {
             System.out.println("Time limit exceeded.");
         }
 

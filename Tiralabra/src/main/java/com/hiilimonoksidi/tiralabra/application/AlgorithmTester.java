@@ -35,7 +35,7 @@ public class AlgorithmTester implements Runnable {
      * @param timeout Aika sekunteina, kuinka kauan odotetaan ennen kuin etsintä
      * pysäytetään. 0 = ei rajoitusta.
      */
-    public void start(int timeout) throws AlgorithmTimeoutExcpetion {
+    public void start(int timeout) throws AlgorithmTimeoutException {
         try {
             Thread thread = new Thread(this);
 
@@ -47,7 +47,7 @@ public class AlgorithmTester implements Runnable {
             if (thread.isAlive()) {
                 algorithm.stop();
                 thread.join();
-                throw new AlgorithmTimeoutExcpetion();
+                throw new AlgorithmTimeoutException();
             }
         } catch (InterruptedException ex) {
             Logger.getLogger(AlgorithmTester.class.getName()).log(Level.SEVERE, null, ex);
