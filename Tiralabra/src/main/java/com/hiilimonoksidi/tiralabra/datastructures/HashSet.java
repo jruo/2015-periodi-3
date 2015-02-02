@@ -39,6 +39,10 @@ public class HashSet<E> implements Iterable<E> {
      * @param element Lisättävä alkio
      */
     public void add(E element) {
+        if (element == null) {
+            throw new IllegalArgumentException("Can't add null to the set");
+        }
+        
         if (getLoadFactor() > loadFactorThreshold) {
             grow();
         }

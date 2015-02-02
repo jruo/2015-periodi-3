@@ -23,13 +23,13 @@ public class Point {
      * @param location Pisteen sijainti
      */
     public Point(String location) {
-        int comma = location.indexOf(",");
-        String s1 = location.substring(0, comma);
-        String s2 = location.substring(comma + 1, location.length());
         try {
+            int comma = location.indexOf(",");
+            String s1 = location.substring(0, comma);
+            String s2 = location.substring(comma + 1, location.length());
             x = Integer.parseInt(s1);
             y = Integer.parseInt(s2);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
             throw new IllegalArgumentException("Invalid coordinates: " + location);
         }
     }

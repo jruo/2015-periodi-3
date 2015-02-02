@@ -9,7 +9,7 @@ package com.hiilimonoksidi.tiralabra.datastructures;
 public class ArrayList<E> {
 
     private Object[] elements;
-    private int length = 10;
+    private int length = 16;
     private int index = 0;
 
     public ArrayList() {
@@ -23,7 +23,7 @@ public class ArrayList<E> {
      */
     public void add(E element) {
         if (element == null) {
-            throw new NullPointerException("Can't add null to the list");
+            throw new IllegalArgumentException("Can't add null to the list");
         }
 
         if (index >= length) {
