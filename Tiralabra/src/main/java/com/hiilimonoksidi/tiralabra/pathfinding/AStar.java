@@ -1,12 +1,11 @@
 package com.hiilimonoksidi.tiralabra.pathfinding;
 
+import com.hiilimonoksidi.tiralabra.datastructures.HashSet;
+import com.hiilimonoksidi.tiralabra.datastructures.Heap;
 import com.hiilimonoksidi.tiralabra.graph.Node;
 import com.hiilimonoksidi.tiralabra.graph.Path;
 import com.hiilimonoksidi.tiralabra.misc.Calc;
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Set;
 
 /**
  * A*-hakualgoritmi.
@@ -28,18 +27,18 @@ public class AStar extends PathfindingAlgorithm {
     /**
      * Joukko, joka sisältää jo tutkitut solmut.
      */
-    protected Set<Node> closed;
+    protected HashSet<Node> closed;
 
     /**
      * Joukko, joka sisältää aina samat solmut kuin openQueue. Nopeuttaa
      * sisältyvyyden tarkistusta.
      */
-    protected Set<Node> open;
+    protected HashSet<Node> open;
 
     /**
      * Prioriteettijono, joka sisältää solmut, jotka odottavat tutkimisvuoroa.
      */
-    protected PriorityQueue<Node> openQueue;
+    protected Heap<Node> openQueue;
 
     @Override
     public void init() {
@@ -48,20 +47,20 @@ public class AStar extends PathfindingAlgorithm {
 
         closed = new HashSet<>();
         open = new HashSet<>();
-        openQueue = new PriorityQueue<>(new NodeComparator());
+        openQueue = new Heap<>(new NodeComparator());
     }
 
     @Override
     public Path search() {
         Node startNode = graph.get(start);
-        openQueue.offer(startNode);
+        openQueue.add(startNode);
         open.add(startNode);
 
         int gx = goal.x;
         int gy = goal.y;
 
         while (!openQueue.isEmpty() && !stopped) {
-            Node current = openQueue.poll();
+            Node current = openQueue.remove();
 
             open.remove(current);
             closed.add(current);
@@ -91,9 +90,10 @@ public class AStar extends PathfindingAlgorithm {
                     f[ny][nx] = gNeighbor + Calc.dist(nx, ny, gx, gy);
 
                     if (neighborOpen) {
-                        openQueue.remove(neighbor);
+                        openQueue.update(neighbor);
+                    } else {
+                        openQueue.add(neighbor);
                     }
-                    openQueue.offer(neighbor);
                     open.add(neighbor);
                 }
             }

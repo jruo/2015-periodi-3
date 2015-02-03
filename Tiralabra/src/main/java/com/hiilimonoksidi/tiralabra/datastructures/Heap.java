@@ -69,27 +69,27 @@ public class Heap<E> {
      * @param element
      */
     public void remove(E element) {
-        int ind = 0;
-        for (int i = 1; i < index; i++) {
-            if (element.equals(array[i])) {
-                ind = i;
-            }
-        }
+        int ind = find(element);
         if (ind == 0) {
             return;
         }
 
-        int parentInd = parent(ind);
-        E parentOfRemoved = get(parentInd);
-        E replaceElement = get(index - 1);
-
         array[ind] = array[--index];
 
-        if (parentInd == 0 || isParent(parentOfRemoved, replaceElement)) {
-            moveDown(ind);
-        } else {
-            moveUp(ind);
+        update(ind);
+    }
+
+    /**
+     * Siirtää elementin uuteen paikkaan keossa jotta kekoeho on voimassa.
+     *
+     * @param element Siirrettävä elementti
+     */
+    public void update(E element) {
+        int ind = find(element);
+        if (ind == 0) {
+            return;
         }
+        update(ind);
     }
 
     /**
@@ -101,8 +101,51 @@ public class Heap<E> {
         return index - 1;
     }
 
+    /**
+     * Tarkistaa onko keko tyhjä.
+     *
+     * @return Tosi jos tyhjä, false muutoin
+     */
     public boolean isEmpty() {
         return index == 1;
+    }
+
+    /**
+     * Etsii tietyn elementin indeksin keossa.
+     *
+     * @param element Etsittävä elementti
+     * @return Elementin indeksi tai 0, jos ei löytynyt
+     */
+    private int find(E element) {
+        int ind = 0;
+        for (int i = 1; i < index; i++) {
+            if (element.equals(array[i])) {
+                ind = i;
+            }
+        }
+        return ind;
+    }
+
+    /**
+     * Siirtää elementin tietyssä sijainnissa uuteen paikkaan niin että kekoeho
+     * on voimassa.
+     *
+     * @param ind Siirrettävän elementin indeksi
+     */
+    private void update(int ind) {
+        if (ind == 1) {
+            moveDown(1);
+            return;
+        }
+        int parentInd = parent(ind);
+        E self = get(ind);
+        E parent = get(parentInd);
+
+        if (isParent(self, parent)) {
+            moveUp(ind);
+        } else {
+            moveDown(ind);
+        }
     }
 
     /**

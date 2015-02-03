@@ -1,11 +1,10 @@
 package com.hiilimonoksidi.tiralabra.pathfinding;
 
+import com.hiilimonoksidi.tiralabra.datastructures.HashSet;
+import com.hiilimonoksidi.tiralabra.datastructures.Heap;
 import com.hiilimonoksidi.tiralabra.graph.Node;
 import com.hiilimonoksidi.tiralabra.graph.Path;
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Set;
 
 /**
  * Dijkstran algoritmi.
@@ -23,12 +22,12 @@ public class Dijkstra extends PathfindingAlgorithm {
      * Prioriteettijono, joka sisältää kaikki verkon solmut
      * paremmuusjärjestyksessä (Pienin d-arvo ensin).
      */
-    private PriorityQueue<Node> nodes;
+    private Heap<Node> nodes;
 
     /**
      * Joukko, joka sisältää kaikki läpi käydyt solmut.
      */
-    private Set<Node> checked;
+    private HashSet<Node> checked;
 
     @Override
     public void init() {
@@ -37,7 +36,7 @@ public class Dijkstra extends PathfindingAlgorithm {
 
         d = new float[height][width];
 
-        nodes = new PriorityQueue<>(new NodeComparator());
+        nodes = new Heap<>(new NodeComparator());
         checked = new HashSet<>();
 
         d[start.y][start.x] = 0;
@@ -50,7 +49,7 @@ public class Dijkstra extends PathfindingAlgorithm {
                 if (j != start.x || i != start.y) {
                     d[i][j] = Float.MAX_VALUE;
                 }
-                nodes.offer(graph.get(j, i));
+                nodes.add(graph.get(j, i));
             }
         }
     }
@@ -61,7 +60,7 @@ public class Dijkstra extends PathfindingAlgorithm {
         int gy = goal.y;
 
         while (!nodes.isEmpty() && !stopped) {
-            Node current = nodes.poll();
+            Node current = nodes.remove();
             checked.add(current);
 
             int cx = current.x;
@@ -84,9 +83,7 @@ public class Dijkstra extends PathfindingAlgorithm {
                         d[ny][nx] = dTest;
                         neighbor.setParent(current);
 
-                        // Väliaikainen hidas operaatio prioriteetin päivittämiseen
-                        nodes.remove(neighbor);
-                        nodes.offer(neighbor);
+                        nodes.update(neighbor);
                     }
                 }
             }

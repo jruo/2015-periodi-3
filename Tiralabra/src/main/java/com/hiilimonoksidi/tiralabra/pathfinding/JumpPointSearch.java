@@ -28,14 +28,14 @@ public class JumpPointSearch extends AStar {
     @Override
     public Path search() {
         Node startNode = graph.get(start);
-        openQueue.offer(startNode);
+        openQueue.add(startNode);
         open.add(startNode);
 
         int gx = goal.x;
         int gy = goal.y;
 
         while (!openQueue.isEmpty()) {
-            Node current = openQueue.poll();
+            Node current = openQueue.remove();
 
             int cx = current.x;
             int cy = current.y;
@@ -68,9 +68,10 @@ public class JumpPointSearch extends AStar {
                         jumpDirections[jy][jx] = neighborDirection;
 
                         if (jumpedOpen) {
-                            openQueue.remove(jumped);
+                            openQueue.update(jumped);
+                        } else {
+                            openQueue.add(jumped);
                         }
-                        openQueue.offer(jumped);
                         open.add(jumped);
                     }
                 }
