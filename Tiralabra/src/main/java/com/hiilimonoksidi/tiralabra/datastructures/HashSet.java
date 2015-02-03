@@ -196,7 +196,7 @@ public class HashSet<E> implements Iterable<E> {
      *
      * @param <T> Sisältävän elementin tyyppi
      */
-    private class Entry<T> {
+    private static class Entry<T> {
 
         final T element;
         Entry next;

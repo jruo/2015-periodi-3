@@ -104,7 +104,7 @@ public class Heap<E> {
     /**
      * Tarkistaa onko keko tyhjä.
      *
-     * @return Tosi jos tyhjä, false muutoin
+     * @return Tosi jos tyhjä, epätosi muutoin
      */
     public boolean isEmpty() {
         return index == 1;
