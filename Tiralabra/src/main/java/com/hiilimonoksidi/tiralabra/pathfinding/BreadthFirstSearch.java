@@ -1,11 +1,9 @@
 package com.hiilimonoksidi.tiralabra.pathfinding;
 
+import com.hiilimonoksidi.tiralabra.datastructures.HashSet;
+import com.hiilimonoksidi.tiralabra.datastructures.Queue;
 import com.hiilimonoksidi.tiralabra.graph.Node;
 import com.hiilimonoksidi.tiralabra.graph.Path;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
 
 /**
  * Breadth-first search -hakualgoritmi.
@@ -22,11 +20,11 @@ public class BreadthFirstSearch extends PathfindingAlgorithm {
     /**
      * Käsitellyt solmut.
      */
-    private Set<Node> closed;
+    private HashSet<Node> closed;
 
     @Override
     protected void init() {
-        open = new LinkedList<>();
+        open = new Queue<>();
         closed = new HashSet<>();
     }
 
@@ -34,13 +32,13 @@ public class BreadthFirstSearch extends PathfindingAlgorithm {
     public Path search() {
         Node startNode = graph.get(start);
         closed.add(startNode);
-        open.offer(startNode);
+        open.add(startNode);
 
         int gx = goal.x;
         int gy = goal.y;
 
         while (!open.isEmpty() && !stopped) {
-            Node current = open.poll();
+            Node current = open.remove();
 
             int cx = current.x;
             int cy = current.y;
@@ -56,7 +54,7 @@ public class BreadthFirstSearch extends PathfindingAlgorithm {
 
                 neighbor.setParent(current);
                 closed.add(neighbor);
-                open.offer(neighbor);
+                open.add(neighbor);
             }
         }
 
