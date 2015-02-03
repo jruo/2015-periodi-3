@@ -72,10 +72,43 @@ public class HeapTest {
 
         for (int i = 0; i < 1000; i++) {
             int elements = 200 + r.nextInt(5000);
-            int maxElement = r.nextInt(1000000);
+            int maxElement = 1 + r.nextInt(1000000);
             for (int j = 0; j < elements; j++) {
                 int rint = r.nextInt(maxElement);
                 heap.add(rint);
+            }
+
+            int last = -1;
+            while (true) {
+                Integer root = heap.remove();
+                if (root == null) {
+                    break;
+                }
+                assertTrue(last <= root);
+                last = root;
+            }
+        }
+    }
+    
+    @Test
+    public void testOrderWhenRemovingNonRootElements() {
+        Random r = new Random();
+
+        ArrayList<Integer> randomElementsToRemove = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            int elements = 200 + r.nextInt(1000);
+            int maxElement = 1 + r.nextInt(5000);
+            for (int j = 0; j < elements; j++) {
+                int rint = r.nextInt(maxElement);
+                heap.add(rint);
+                
+                if (r.nextInt(20) < 5) {
+                    randomElementsToRemove.add(rint);
+                }
+            }
+            
+            for (int j = 0; j < randomElementsToRemove.size(); j++) {
+                heap.remove(randomElementsToRemove.get(j));
             }
 
             int last = -1;

@@ -64,12 +64,45 @@ public class Heap<E> {
     }
 
     /**
+     * Poistaa keosta tietyn elementin
+     *
+     * @param element
+     */
+    public void remove(E element) {
+        int ind = 0;
+        for (int i = 1; i < index; i++) {
+            if (element.equals(array[i])) {
+                ind = i;
+            }
+        }
+        if (ind == 0) {
+            return;
+        }
+
+        int parentInd = parent(ind);
+        E parentOfRemoved = get(parentInd);
+        E replaceElement = get(index - 1);
+
+        array[ind] = array[--index];
+
+        if (parentInd == 0 || isParent(parentOfRemoved, replaceElement)) {
+            moveDown(ind);
+        } else {
+            moveUp(ind);
+        }
+    }
+
+    /**
      * Palauttaa keon elementtien lukumäärän.
      *
      * @return Keon koko
      */
     public int size() {
         return index - 1;
+    }
+
+    public boolean isEmpty() {
+        return index == 1;
     }
 
     /**
@@ -205,7 +238,7 @@ public class Heap<E> {
      * @return Tosi jos parent kuuluisi olla childin vahnempi
      */
     private boolean isParent(E parent, E child) {
-        return comparator.compare(parent, child) <= 0;
+        return comparator.compare(parent, child) < 0;
     }
 
     /**
@@ -216,7 +249,7 @@ public class Heap<E> {
      * @return Tosi jos child kuuluisi olla parentin lapsi
      */
     private boolean isChild(E child, E parent) {
-        return comparator.compare(child, parent) >= 0;
+        return comparator.compare(child, parent) > 0;
     }
 
     @Override
