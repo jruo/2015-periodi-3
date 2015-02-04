@@ -34,9 +34,6 @@ public class BreadthFirstSearch extends PathfindingAlgorithm {
         closed.add(startNode);
         open.add(startNode);
 
-        int gx = goal.x;
-        int gy = goal.y;
-
         while (!open.isEmpty() && !stopped) {
             Node current = open.remove();
 

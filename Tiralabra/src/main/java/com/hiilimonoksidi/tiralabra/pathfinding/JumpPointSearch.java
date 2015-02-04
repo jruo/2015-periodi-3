@@ -31,9 +31,6 @@ public class JumpPointSearch extends AStar {
         openQueue.add(startNode);
         open.add(startNode);
 
-        int gx = goal.x;
-        int gy = goal.y;
-
         while (!openQueue.isEmpty()) {
             Node current = openQueue.remove();
 

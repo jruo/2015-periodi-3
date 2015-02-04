@@ -56,9 +56,6 @@ public class AStar extends PathfindingAlgorithm {
         openQueue.add(startNode);
         open.add(startNode);
 
-        int gx = goal.x;
-        int gy = goal.y;
-
         while (!openQueue.isEmpty() && !stopped) {
             Node current = openQueue.remove();
 

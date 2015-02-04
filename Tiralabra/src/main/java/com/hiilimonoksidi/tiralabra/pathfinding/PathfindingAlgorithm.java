@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  * @author Janne Ruoho
  */
 public abstract class PathfindingAlgorithm {
-    
+
     protected final float SQRT_2 = 1.41421356237f;
 
     /**
@@ -25,9 +25,17 @@ public abstract class PathfindingAlgorithm {
      * Reitinetsinnän aloitus- ja lopetuspisteet
      */
     protected Point start, goal;
-    
+
+    /**
+     * Lopetuspisteen koordinaatit
+     */
+    protected int gx, gy;
+
+    /**
+     * Sisältää tiedon, onko algoritmi pysäytetty
+     */
     protected boolean stopped;
-    
+
     /**
      * Keskeyttää algoritmin toiminnan.
      */
@@ -46,6 +54,8 @@ public abstract class PathfindingAlgorithm {
         this.graph = new Graph(graph);
         this.start = start;
         this.goal = goal;
+        gx = goal.x;
+        gy = goal.y;
         stopped = false;
         init();
     }
@@ -73,7 +83,7 @@ public abstract class PathfindingAlgorithm {
     protected Path reconstructPath(Node goal) {
         return reconstructPath(goal, new Path());
     }
-    
+
     protected Path reconstructPath(Node goal, Path path) {
         path.addPoint(goal.getLocation());
 

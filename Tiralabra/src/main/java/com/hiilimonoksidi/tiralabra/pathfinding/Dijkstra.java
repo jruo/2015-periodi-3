@@ -56,9 +56,6 @@ public class Dijkstra extends PathfindingAlgorithm {
 
     @Override
     public Path search() {
-        int gx = goal.x;
-        int gy = goal.y;
-
         while (!nodes.isEmpty() && !stopped) {
             Node current = nodes.remove();
             checked.add(current);
