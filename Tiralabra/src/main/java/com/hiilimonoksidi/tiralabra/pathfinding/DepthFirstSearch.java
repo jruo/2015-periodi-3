@@ -1,9 +1,9 @@
 package com.hiilimonoksidi.tiralabra.pathfinding;
 
 import com.hiilimonoksidi.tiralabra.datastructures.HashSet;
+import com.hiilimonoksidi.tiralabra.datastructures.Stack;
 import com.hiilimonoksidi.tiralabra.graph.Node;
 import com.hiilimonoksidi.tiralabra.graph.Path;
-import java.util.Stack;
 
 /**
  * Syvyyssuuntainen hakualgoritmi. Tämä algoritmi ei useimmissa tapauksissa
@@ -15,21 +15,21 @@ import java.util.Stack;
  */
 public class DepthFirstSearch extends PathfindingAlgorithm {
 
-    private Stack<Node> stack;
+    private Stack<Node> open;
     private HashSet<Node> closed;
 
     @Override
     protected void init() {
-        stack = new Stack<>();
+        open = new Stack<>();
         closed = new HashSet<>();
     }
 
     @Override
     public Path search() {
-        stack.push(graph.get(start));
+        open.push(graph.get(start));
 
-        while (!stack.isEmpty() && !stopped) {
-            Node current = stack.pop();
+        while (!open.isEmpty() && !stopped) {
+            Node current = open.pop();
             closed.add(current);
 
             int cx = current.x;
@@ -45,9 +45,8 @@ public class DepthFirstSearch extends PathfindingAlgorithm {
                 }
 
                 if (!closed.contains(neighbor)) {
-
                     neighbor.setParent(current);
-                    stack.push(neighbor);
+                    open.push(neighbor);
                 }
             }
         }
