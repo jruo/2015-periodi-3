@@ -127,6 +127,38 @@ public class Graph {
 
         return neighbors;
     }
+    
+    public Node[] getOrthogonalNeighbors(Node node) {
+        return getOrthogonalNeighbors(node.x, node.y);
+    }
+    
+    public Node[] getOrthogonalNeighbors(int x, int y) {
+        Node[] neighbors = new Node[4];
+        
+        if (!nodes[y][x].clear) {
+            return neighbors;
+        }
+        
+        Node north = getNeighborAtDirection(x, y, Direction.NORTH);
+        Node east = getNeighborAtDirection(x, y, Direction.EAST);
+        Node south = getNeighborAtDirection(x, y, Direction.SOUTH);
+        Node west = getNeighborAtDirection(x, y, Direction.WEST);
+        
+        if (north != null && north.clear) {
+            neighbors[0] = north;
+        }
+        if (east != null && east.clear) {
+            neighbors[1] = east;
+        }
+        if (south != null && south.clear) {
+            neighbors[2] = south;
+        }
+        if (west != null && west.clear) {
+            neighbors[3] = west;
+        }
+        
+        return neighbors;
+    }
 
     /**
      * Palauttaa kaikki solmut, joita tulisi tarkastella jump point searchissa

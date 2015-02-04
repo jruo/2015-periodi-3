@@ -101,7 +101,8 @@ public abstract class PathfindingAlgorithm {
         A_STAR(AStar.class, "A*"),
         DIJKSTRA(Dijkstra.class, "Dijkstra"),
         JUMP_POINT_SEARCH(JumpPointSearch.class, "Jump point search"),
-        BREADTH_FIRST_SEARCH(BreadthFirstSearch.class, "Breadth-first search");
+        BREADTH_FIRST_SEARCH(BreadthFirstSearch.class, "Breadth-first search"),
+        DEPTH_FIRST_SEARCH(DepthFirstSearch.class, "Depth-first search");
 
         private final Class<? extends PathfindingAlgorithm> clazz;
         private final String name;
