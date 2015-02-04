@@ -3,6 +3,7 @@ package com.hiilimonoksidi.tiralabra.datastructures;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -13,7 +14,8 @@ public class ArrayListTest {
 
     private ArrayList<String> list;
 
-    public ArrayListTest() {
+    @Before
+    public void setUp() {
         list = new ArrayList<>();
     }
 

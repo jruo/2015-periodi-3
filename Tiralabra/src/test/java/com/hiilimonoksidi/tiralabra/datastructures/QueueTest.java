@@ -1,6 +1,7 @@
 package com.hiilimonoksidi.tiralabra.datastructures;
 
 import static org.junit.Assert.assertEquals;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -11,46 +12,47 @@ public class QueueTest {
 
     Queue<String> q;
 
-    public QueueTest() {
+    @Before
+    public void setUp() {
         q = new Queue<>();
     }
 
     @Test
     public void test() {
-        q.add("Eka");
-        q.add("Toka");
-        q.add("Kolmas");
-        q.add("Neljäs");
-        q.add("Viides");
+        q.enqueue("Eka");
+        q.enqueue("Toka");
+        q.enqueue("Kolmas");
+        q.enqueue("Neljäs");
+        q.enqueue("Viides");
 
-        assertEquals("Eka", q.remove());
-        assertEquals("Toka", q.remove());
-        assertEquals("Kolmas", q.remove());
+        assertEquals("Eka", q.dequeue());
+        assertEquals("Toka", q.dequeue());
+        assertEquals("Kolmas", q.dequeue());
 
-        q.add("Kuudes");
-        q.add("Seitsemäs");
+        q.enqueue("Kuudes");
+        q.enqueue("Seitsemäs");
 
-        assertEquals("Neljäs", q.remove());
-        assertEquals("Viides", q.remove());
+        assertEquals("Neljäs", q.dequeue());
+        assertEquals("Viides", q.dequeue());
 
-        q.add("Kahdeksas");
+        q.enqueue("Kahdeksas");
 
-        assertEquals("Kuudes", q.remove());
-        assertEquals("Seitsemäs", q.remove());
-        assertEquals("Kahdeksas", q.remove());
-        assertEquals(null, q.remove());
+        assertEquals("Kuudes", q.dequeue());
+        assertEquals("Seitsemäs", q.dequeue());
+        assertEquals("Kahdeksas", q.dequeue());
+        assertEquals(null, q.dequeue());
     }
 
     @Test
     public void testSize() {
         assertEquals(0, q.size());
-        q.add("asd");
+        q.enqueue("asd");
         assertEquals(1, q.size());
-        q.remove();
+        q.dequeue();
         assertEquals(0, q.size());
-        q.add("asd");
-        q.add("asd");
-        q.add("asd");
+        q.enqueue("asd");
+        q.enqueue("asd");
+        q.enqueue("asd");
         assertEquals(3, q.size());
     }
 

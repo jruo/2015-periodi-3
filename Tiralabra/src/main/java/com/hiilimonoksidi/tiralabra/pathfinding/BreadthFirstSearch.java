@@ -32,10 +32,10 @@ public class BreadthFirstSearch extends PathfindingAlgorithm {
     public Path search() {
         Node startNode = graph.get(start);
         closed.add(startNode);
-        open.add(startNode);
+        open.enqueue(startNode);
 
         while (!open.isEmpty() && !stopped) {
-            Node current = open.remove();
+            Node current = open.dequeue();
 
             int cx = current.x;
             int cy = current.y;
@@ -51,7 +51,7 @@ public class BreadthFirstSearch extends PathfindingAlgorithm {
 
                 neighbor.setParent(current);
                 closed.add(neighbor);
-                open.add(neighbor);
+                open.enqueue(neighbor);
             }
         }
 

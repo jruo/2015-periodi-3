@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.Random;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -14,7 +15,8 @@ public class HeapTest {
 
     Heap<Integer> heap;
 
-    public HeapTest() {
+    @Before
+    public void setUp() {
         heap = new Heap<>(new Comparator<Integer>() {
             @Override
             public int compare(Integer o1, Integer o2) {
