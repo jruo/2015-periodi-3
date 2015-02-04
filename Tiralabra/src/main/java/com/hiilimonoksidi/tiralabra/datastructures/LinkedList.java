@@ -18,6 +18,10 @@ public class LinkedList<E> {
      * @param element Lisättävä elementti
      */
     public void add(E element) {
+        if (element == null) {
+            throw new IllegalArgumentException("Can't add null to the list");
+        }
+        
         Entry<E> entry = new Entry<>(element);
 
         if (size == 0) {
