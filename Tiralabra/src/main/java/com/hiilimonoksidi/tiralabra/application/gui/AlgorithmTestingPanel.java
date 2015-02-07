@@ -1,6 +1,7 @@
 package com.hiilimonoksidi.tiralabra.application.gui;
 
 import com.hiilimonoksidi.tiralabra.application.AlgorithmTester;
+import com.hiilimonoksidi.tiralabra.application.AlgorithmTimeoutException;
 import com.hiilimonoksidi.tiralabra.application.StepController;
 import com.hiilimonoksidi.tiralabra.graph.Graph;
 import com.hiilimonoksidi.tiralabra.graph.Node;
@@ -10,6 +11,7 @@ import com.hiilimonoksidi.tiralabra.misc.Point;
 import com.hiilimonoksidi.tiralabra.pathfinding.PathfindingAlgorithm;
 import java.awt.image.BufferedImage;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -57,7 +59,7 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         jPanelButtons = new javax.swing.JPanel();
         jButtonStop = new javax.swing.JButton();
         jButtonStart = new javax.swing.JButton();
-        jButtonExit = new javax.swing.JButton();
+        jButtonBack = new javax.swing.JButton();
         jPanelSpeed = new javax.swing.JPanel();
         jSliderSpeed = new javax.swing.JSlider();
         jLabelSpeed = new javax.swing.JLabel();
@@ -158,17 +160,17 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
         jPanelButtons.add(jButtonStart, gridBagConstraints);
 
-        jButtonExit.setText("Exit");
-        jButtonExit.addActionListener(new java.awt.event.ActionListener() {
+        jButtonBack.setText("Back");
+        jButtonBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonExitActionPerformed(evt);
+                jButtonBackActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
-        jPanelButtons.add(jButtonExit, gridBagConstraints);
+        jPanelButtons.add(jButtonBack, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -179,6 +181,7 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
 
         jPanelSpeed.setLayout(new java.awt.GridBagLayout());
 
+        jSliderSpeed.setValue(75);
         jSliderSpeed.setEnabled(false);
         jSliderSpeed.setPreferredSize(new java.awt.Dimension(100, 23));
         jSliderSpeed.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -273,8 +276,7 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jCheckBoxVisualizeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jCheckBoxVisualizeStateChanged
-        boolean visualize = jCheckBoxVisualize.isSelected();
-        toggleVisualizerOptions(visualize);
+        toggleVisualizerOptions(jCheckBoxVisualize.isSelected());
     }//GEN-LAST:event_jCheckBoxVisualizeStateChanged
 
     private void toggleVisualizerOptions(boolean visualize) {
@@ -314,10 +316,10 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         stop();
     }//GEN-LAST:event_jButtonStopActionPerformed
 
-    private void jButtonExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExitActionPerformed
+    private void jButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBackActionPerformed
         stop();
         mainWindow.setPanel(new InputPanel(mainWindow));
-    }//GEN-LAST:event_jButtonExitActionPerformed
+    }//GEN-LAST:event_jButtonBackActionPerformed
 
     private void stop() {
         if (currentAlgorithm != null) {
@@ -326,47 +328,45 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
     }
 
     private void updateStepDelay() {
-        int val = jSliderSpeed.getValue();
-        stepDelay = 1; // TODO: aika
+        int val = 100 - jSliderSpeed.getValue();
+        stepDelay = (int) (0.4047 * Math.exp(0.06197 * val) + 1.161);
     }
 
     private void start() {
         disableOptions();
         updateStepDelay();
-
-        jPanelAlgorithmTestingImageCanvas.setPath(null);
-        jPanelAlgorithmTestingImageCanvas.repaint();
+        jPanelAlgorithmTestingImageCanvas.clear();
 
         PathfindingAlgorithm.Type algorithm = getAlgorithm();
+        
         currentAlgorithm = algorithm.getInstance();
         AlgorithmTester tester = new AlgorithmTester(currentAlgorithm, graph, start, end);
 
-        tester.start(new StepController() {
-
-            @Override
-            public void setOpenNodes(Iterable<Node> open) {
-                jPanelAlgorithmTestingImageCanvas.setOpenNodes(open);
-                jPanelAlgorithmTestingImageCanvas.repaint();
+        log("----------");
+        log("Starting " + algorithm);
+        
+        if (jCheckBoxVisualize.isSelected()) {
+            tester.start(new StepControllerImpl());
+        } else {
+            try {
+                int timeout = Integer.parseInt(jTextFieldTimeLimit.getText());
+                tester.start(timeout);
+                jPanelAlgorithmTestingImageCanvas.setPath(tester.getPath());
+                log(String.format("Time elapsed: %.0f ms", tester.getTimeElapsed()));
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(mainWindow, "Enter valid time limit", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (AlgorithmTimeoutException ex) {
+                
             }
+            enableOptions();
+        }
+        
+        if (tester.getPath() != null) {
+            log(String.format("Path length: %.0f", tester.getPath().getLength()));
+        } else {
+            log("No path found.");
+        }
 
-            @Override
-            public void setClosedNodes(Iterable<Node> closed) {
-                jPanelAlgorithmTestingImageCanvas.setClosedNodes(closed);
-                jPanelAlgorithmTestingImageCanvas.repaint();
-            }
-
-            @Override
-            public void setPath(Path path) {
-                jPanelAlgorithmTestingImageCanvas.setPath(path);
-                jPanelAlgorithmTestingImageCanvas.repaint();
-                enableOptions();
-            }
-
-            @Override
-            public int getDelay() {
-                return stepDelay;
-            }
-        });
     }
 
     private PathfindingAlgorithm.Type getAlgorithm() {
@@ -379,9 +379,13 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         }
         return algorithm;
     }
+    
+    private void log(String line) {
+        jTextAreaResults.append("\n" + line);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonExit;
+    private javax.swing.JButton jButtonBack;
     private javax.swing.JButton jButtonStart;
     private javax.swing.JButton jButtonStop;
     private javax.swing.JCheckBox jCheckBoxVisualize;
@@ -405,4 +409,34 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
     private javax.swing.JTextArea jTextAreaResults;
     private javax.swing.JTextField jTextFieldTimeLimit;
     // End of variables declaration//GEN-END:variables
+
+    private class StepControllerImpl implements StepController {
+
+        public StepControllerImpl() {
+        }
+
+        @Override
+        public void setOpenNodes(Iterable<Node> open) {
+            jPanelAlgorithmTestingImageCanvas.setOpenNodes(open);
+            jPanelAlgorithmTestingImageCanvas.repaint();
+        }
+
+        @Override
+        public void setClosedNodes(Iterable<Node> closed) {
+            jPanelAlgorithmTestingImageCanvas.setClosedNodes(closed);
+            jPanelAlgorithmTestingImageCanvas.repaint();
+        }
+        
+        @Override
+        public void setPath(Path path) {
+            jPanelAlgorithmTestingImageCanvas.setPath(path);
+            jPanelAlgorithmTestingImageCanvas.repaint();
+            enableOptions();
+        }
+        
+        @Override
+        public int getDelay() {
+            return stepDelay;
+        }
+    }
 }

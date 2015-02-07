@@ -127,15 +127,23 @@ public abstract class PathfindingAlgorithm {
     }
 
     protected Path reconstructPath(Node goal, Path path) {
-        path.addPoint(goal.getLocation());
+        boolean reachedStart = false;
 
+        path.addPoint(goal.getLocation());
         Node parent = goal.getParent();
         while (parent != null) {
+            if (parent.x == start.x && parent.y == start.y) {
+                reachedStart = true;
+            }
             path.addPoint(parent.getLocation());
             parent = parent.getParent();
         }
 
-        return path;
+        if (reachedStart) {
+            return path;
+        } else {
+            return null;
+        }
     }
 
     public enum Type {

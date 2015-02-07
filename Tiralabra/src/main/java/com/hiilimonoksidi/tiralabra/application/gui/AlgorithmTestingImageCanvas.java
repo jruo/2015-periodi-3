@@ -53,6 +53,13 @@ public class AlgorithmTestingImageCanvas extends javax.swing.JPanel {
         setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
         revalidate();
     }
+    
+    public void clear() {
+        closed = null;
+        open = null;
+        path = null;
+        repaint();
+    }
 
     public void setClosedNodes(Iterable<Node> closed) {
         this.closed = closed;

@@ -37,12 +37,12 @@ public class InputPanel extends JPanel {
                 Point start = inputImageCanvas.getStart();
                 Point end = inputImageCanvas.getEnd();
                 if (start != null) {
-                    jLabelStart.setText("Start point: " + start.x + ", " + start.y);
+                    jLabelStart.setText("Start point: (" + start.x + ", " + start.y + ")");
                 } else {
                     jLabelStart.setText("Start point: Select start point with left click");
                 }
                 if (end != null) {
-                    jLabelEnd.setText("End point: " + end.x + ", " + end.y);
+                    jLabelEnd.setText("End point: (" + end.x + ", " + end.y + ")");
                 } else {
                     jLabelEnd.setText("End point: Select end point with right click");
                 }
@@ -181,6 +181,12 @@ public class InputPanel extends JPanel {
     }//GEN-LAST:event_jButtonBrowseActionPerformed
 
     private void jButtonStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartActionPerformed
+        if (inputImageCanvas.getImage() == null
+            || inputImageCanvas.getStart() == null
+            || inputImageCanvas.getEnd() == null) {
+            JOptionPane.showMessageDialog(mainWindow, "Select input image, start point and end point.", null, JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         mainWindow.setPanel(new AlgorithmTestingPanel(mainWindow,
                                                       inputImageCanvas.getImage(),
                                                       inputImageCanvas.getStart(),
@@ -205,7 +211,7 @@ public class InputPanel extends JPanel {
                 jLabelStart.setText("Start point: Select start point with left click");
                 jLabelEnd.setText("End point: Select end point with right click");
             } catch (IOException | NullPointerException ex) {
-                JOptionPane.showMessageDialog(this, "Could not read image file", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(mainWindow, "Could not read image file", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
