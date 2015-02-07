@@ -379,7 +379,7 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(mainWindow, "Enter valid time limit", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (AlgorithmTimeoutException ex) {
-
+                log("Time limit exceeded.");
             }
             enableOptions();
             logPath(tester.getPath());
