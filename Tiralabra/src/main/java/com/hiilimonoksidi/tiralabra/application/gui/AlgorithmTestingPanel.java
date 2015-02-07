@@ -12,6 +12,7 @@ import com.hiilimonoksidi.tiralabra.pathfinding.PathfindingAlgorithm;
 import java.awt.image.BufferedImage;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  * Gui:n paneeli, jossa testataan algoritmeja.
@@ -381,14 +382,21 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
 
             }
             enableOptions();
+            logPath(tester.getPath());
         }
+    }
 
-        if (tester.getPath() != null) {
-            log(String.format("Path length: %.0f", tester.getPath().getLength()));
+    /**
+     * Printtaa tiedon polusta lokiin.
+     * 
+     * @param path Polku
+     */
+    private void logPath(Path path) {
+        if (path != null) {
+            log(String.format("Path length: %.0f", path.getLength()));
         } else {
             log("No path found.");
         }
-
     }
 
     /**
@@ -412,8 +420,13 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
      *
      * @param line Rivi
      */
-    private void log(String line) {
-        jTextAreaResults.append("\n" + line);
+    private void log(final String line) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                jTextAreaResults.append("\n" + line);
+            }
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -464,6 +477,7 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
             jPanelAlgorithmTestingImageCanvas.setPath(path);
             jPanelAlgorithmTestingImageCanvas.repaint();
             enableOptions();
+            logPath(path);
         }
 
         @Override
