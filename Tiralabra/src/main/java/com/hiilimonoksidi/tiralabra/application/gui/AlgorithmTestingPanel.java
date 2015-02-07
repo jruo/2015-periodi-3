@@ -11,14 +11,16 @@ import javax.swing.DefaultListModel;
  */
 public class AlgorithmTestingPanel extends javax.swing.JPanel {
 
-    private BufferedImage originalImage;
+    private BufferedImage image;
     private Point start, end;
 
     public AlgorithmTestingPanel(BufferedImage image, Point start, Point end) {
         initComponents();
-        originalImage = image;
+        this.image = image;
         this.start = start;
         this.end = end;
+        
+        jPanelAlgorithmTestingImageCanvas.setImage(image);
     }
 
     /**
@@ -48,6 +50,7 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         jPanelImage = new javax.swing.JPanel();
         jScrollPaneCanvas = new javax.swing.JScrollPane();
         jPanelCanvas = new javax.swing.JPanel();
+        jPanelAlgorithmTestingImageCanvas = new com.hiilimonoksidi.tiralabra.application.gui.AlgorithmTestingImageCanvas();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -86,6 +89,7 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         }
         jListAlgorithms.setModel(listModel);
         jListAlgorithms.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jListAlgorithms.setSelectedIndex(0);
         jScrollPaneAlgorithms.setViewportView(jListAlgorithms);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -168,6 +172,20 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         jPanelImage.setLayout(new java.awt.GridBagLayout());
 
         jPanelCanvas.setLayout(new java.awt.GridBagLayout());
+
+        javax.swing.GroupLayout jPanelAlgorithmTestingImageCanvasLayout = new javax.swing.GroupLayout(jPanelAlgorithmTestingImageCanvas);
+        jPanelAlgorithmTestingImageCanvas.setLayout(jPanelAlgorithmTestingImageCanvasLayout);
+        jPanelAlgorithmTestingImageCanvasLayout.setHorizontalGroup(
+            jPanelAlgorithmTestingImageCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanelAlgorithmTestingImageCanvasLayout.setVerticalGroup(
+            jPanelAlgorithmTestingImageCanvasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        jPanelCanvas.add(jPanelAlgorithmTestingImageCanvas, new java.awt.GridBagConstraints());
+
         jScrollPaneCanvas.setViewportView(jPanelCanvas);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -198,6 +216,7 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabelSpeed;
     private javax.swing.JLabel jLabelTimeLimit;
     private javax.swing.JList jListAlgorithms;
+    private com.hiilimonoksidi.tiralabra.application.gui.AlgorithmTestingImageCanvas jPanelAlgorithmTestingImageCanvas;
     private javax.swing.JPanel jPanelCanvas;
     private javax.swing.JPanel jPanelImage;
     private javax.swing.JPanel jPanelOptions;
