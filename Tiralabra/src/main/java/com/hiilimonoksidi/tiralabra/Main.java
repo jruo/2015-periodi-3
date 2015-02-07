@@ -1,6 +1,7 @@
 package com.hiilimonoksidi.tiralabra;
 
 import com.hiilimonoksidi.tiralabra.application.CLIApplication;
+import com.hiilimonoksidi.tiralabra.application.GUIApplication;
 import com.hiilimonoksidi.tiralabra.misc.Arguments;
 import com.hiilimonoksidi.tiralabra.misc.Point;
 import java.io.File;
@@ -11,7 +12,7 @@ public class Main {
         Arguments arguments = new Arguments(args);
 
         if (arguments.getLength() == 0) {
-            // new GUIApplication()?
+            new GUIApplication();
         } else {
             String inputFile = arguments.getArgument("-i");
             String outputFolder = arguments.getArgument("-o");
