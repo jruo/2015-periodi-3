@@ -20,6 +20,11 @@ public class MainWindow extends JFrame {
         setVisible(true);
     }
     
+    /**
+     * Vaihtaa ikkunan paneelin toiseen.
+     * 
+     * @param component Uusi paneeli
+     */
     public void setPanel(Component component) {
         Rectangle bounds = getBounds();
         if (panel != null) {
@@ -32,6 +37,11 @@ public class MainWindow extends JFrame {
         resizeWindow(bounds);
     }
     
+    /**
+     * Muuttaa ikkunan koon niin, että se pysyy keskitetysti samassa paikassa.
+     * 
+     * @param previousBounds Vanha sijainti ja koko
+     */
     public void resizeWindow(Rectangle previousBounds) {
         int previousCenterX = (int) previousBounds.getCenterX();
         int previousCenterY = (int) previousBounds.getCenterY();

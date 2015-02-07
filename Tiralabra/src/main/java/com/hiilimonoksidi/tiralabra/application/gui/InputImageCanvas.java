@@ -11,7 +11,8 @@ import java.awt.image.BufferedImage;
 import javax.swing.SwingUtilities;
 
 /**
- *
+ * Piirtää syötekuvan ja käyttäjän valitsemat aloitus- ja lopetuspisteet.
+ * 
  * @author Janne Ruoho
  */
 public class InputImageCanvas extends javax.swing.JPanel implements MouseListener {
@@ -41,6 +42,11 @@ public class InputImageCanvas extends javax.swing.JPanel implements MouseListene
         setLayout(new java.awt.GridBagLayout());
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Asettaa kuuntelijan joka aktivoituu kun käyttäjä vaihtaa pisteiden sijaintia.
+     * 
+     * @param listener Kuuntelija
+     */
     public void setPointChangedListener(ActionListener listener) {
         pointChangedListener = listener;
     }

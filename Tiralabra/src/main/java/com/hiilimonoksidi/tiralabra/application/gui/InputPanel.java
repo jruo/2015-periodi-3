@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
+ * Paneeli, jossa käyttäjä valitsee syötekuvan ja aloitus- ja lopetuspisteet.
  *
  * @author Janne Ruoho
  */
@@ -26,6 +27,9 @@ public class InputPanel extends JPanel {
         addCanvasListeners();
     }
 
+    /**
+     * Lisää kuuntelijat.
+     */
     private void addCanvasListeners() {
         inputImageCanvas.setPointChangedListener(new ActionListener() {
             @Override
@@ -123,8 +127,13 @@ public class InputPanel extends JPanel {
 
         jPanelBottom.setLayout(new java.awt.GridBagLayout());
 
-        jButtonStart.setText("Start");
+        jButtonStart.setText("Next");
         jButtonStart.setMargin(new java.awt.Insets(10, 14, 10, 14));
+        jButtonStart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonStartActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
@@ -171,6 +180,16 @@ public class InputPanel extends JPanel {
         loadImage();
     }//GEN-LAST:event_jButtonBrowseActionPerformed
 
+    private void jButtonStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartActionPerformed
+        mainWindow.setPanel(new AlgorithmTestingPanel(inputImageCanvas.getImage(),
+                                                      inputImageCanvas.getStart(),
+                                                      inputImageCanvas.getEnd()));
+    }//GEN-LAST:event_jButtonStartActionPerformed
+
+    /**
+     * Näyttää tiedostonavausikkunan ja lataa käyttäjän haluaman kuvan
+     * InputImageCanvasille.
+     */
     private void loadImage() throws HeadlessException {
         JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
         int result = chooser.showOpenDialog(this);

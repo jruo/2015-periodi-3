@@ -34,6 +34,8 @@ public class AlgorithmTester implements Runnable {
      *
      * @param timeout Aika sekunteina, kuinka kauan odotetaan ennen kuin etsintä
      * pysäytetään. 0 = ei rajoitusta.
+     * @throws
+     * com.hiilimonoksidi.tiralabra.application.AlgorithmTimeoutException
      */
     public void start(int timeout) throws AlgorithmTimeoutException {
         try {
