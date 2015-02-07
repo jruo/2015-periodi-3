@@ -32,9 +32,14 @@ public abstract class PathfindingAlgorithm {
     protected int gx, gy;
 
     /**
+     * Löydetty polku
+     */
+    protected Path path;
+    
+    /**
      * Sisältää tiedon, onko algoritmi pysäytetty
      */
-    protected boolean stopped;
+    private boolean stopped;
 
     /**
      * Keskeyttää algoritmin toiminnan.
@@ -66,12 +71,38 @@ public abstract class PathfindingAlgorithm {
     protected abstract void init();
 
     /**
+     * Suorittaa yhden askeleen reitinesinnässä
+     *
+     * @return Palauttaa tosi, jos tämä askel päätyi maaliin. Muussa tapauksessa
+     * epätosi.
+     */
+    public abstract boolean step();
+
+    /**
+     * Tarkistaa pystyykö algoritmin seuraavan askeleen suorittamaan.
+     *
+     * @return Tosi jos pystyy, epätosi muuten
+     */
+    public abstract boolean hasNextStep();
+    
+    public abstract Iterable<Node> getClosedNodes();
+    
+    public abstract Iterable<Node> getOpenNodes();
+
+    /**
      * Aloittaa reitinetsinnän.
      *
      * @return Polun aloituspisteestä lopetuspisteeseen, jos reitti on olemassa.
      * Jos reittiä ei ole, palauttaa null.
      */
-    public abstract Path search();
+    public Path search() {
+        while (hasNextStep() && !stopped) {
+            if (step()) {
+                break;
+            }
+        }
+        return path;
+    }
 
     /**
      * Rakentaa polun annetusta solmusta taaksepäin aloituspisteen solmuun

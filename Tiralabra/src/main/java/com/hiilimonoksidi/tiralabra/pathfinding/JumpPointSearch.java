@@ -26,56 +26,51 @@ public class JumpPointSearch extends AStar {
     }
 
     @Override
-    public Path search() {
-        Node startNode = graph.get(start);
-        openQueue.add(startNode);
-        open.add(startNode);
+    public boolean step() {
+        Node current = openQueue.remove();
 
-        while (!openQueue.isEmpty()) {
-            Node current = openQueue.remove();
+        int cx = current.x;
+        int cy = current.y;
 
-            int cx = current.x;
-            int cy = current.y;
+        if (cx == gx && cy == gy) {
+            path = reconstructPath(current);
+            return true;
+        }
 
-            if (cx == gx && cy == gy) {
-                return reconstructPath(current);
+        for (Node neighbor : graph.getJumpableNeighbors(cx, cy, jumpDirections[cy][cx])) {
+            if (neighbor == null) {
+                continue;
             }
 
-            for (Node neighbor : graph.getJumpableNeighbors(cx, cy, jumpDirections[cy][cx])) {
-                if (neighbor == null) {
-                    continue;
-                }
+            Direction neighborDirection = Direction.getDirection(cx, cy, neighbor.x, neighbor.y);
 
-                Direction neighborDirection = Direction.getDirection(cx, cy, neighbor.x, neighbor.y);
+            Node jumped = jump(neighbor.x, neighbor.y, neighborDirection);
 
-                Node jumped = jump(neighbor.x, neighbor.y, neighborDirection);
+            if (jumped != null) {
+                int jx = jumped.x;
+                int jy = jumped.y;
 
-                if (jumped != null) {
-                    int jx = jumped.x;
-                    int jy = jumped.y;
+                float gJumped = g[cy][cx] + Calc.dist(cx, cy, jx, jy);
 
-                    float gJumped = g[cy][cx] + Calc.dist(cx, cy, jx, jy);
+                boolean jumpedOpen = open.contains(jumped);
+                if (!jumpedOpen || gJumped < g[jy][jx]) {
+                    jumped.setParent(current);
 
-                    boolean jumpedOpen = open.contains(jumped);
-                    if (!jumpedOpen || gJumped < g[jy][jx]) {
-                        jumped.setParent(current);
+                    g[jy][jx] = gJumped;
+                    f[jy][jx] = gJumped + Calc.dist(jx, jy, gx, gy);
+                    jumpDirections[jy][jx] = neighborDirection;
 
-                        g[jy][jx] = gJumped;
-                        f[jy][jx] = gJumped + Calc.dist(jx, jy, gx, gy);
-                        jumpDirections[jy][jx] = neighborDirection;
-
-                        if (jumpedOpen) {
-                            openQueue.update(jumped);
-                        } else {
-                            openQueue.add(jumped);
-                        }
-                        open.add(jumped);
+                    if (jumpedOpen) {
+                        openQueue.update(jumped);
+                    } else {
+                        openQueue.add(jumped);
                     }
+                    open.add(jumped);
                 }
             }
         }
-
-        return null;
+        
+        return false;
     }
 
     /**

@@ -3,7 +3,6 @@ package com.hiilimonoksidi.tiralabra.pathfinding;
 import com.hiilimonoksidi.tiralabra.datastructures.HashSet;
 import com.hiilimonoksidi.tiralabra.datastructures.Heap;
 import com.hiilimonoksidi.tiralabra.graph.Node;
-import com.hiilimonoksidi.tiralabra.graph.Path;
 import java.util.Comparator;
 
 /**
@@ -55,38 +54,52 @@ public class Dijkstra extends PathfindingAlgorithm {
     }
 
     @Override
-    public Path search() {
-        while (!nodes.isEmpty() && !stopped) {
-            Node current = nodes.remove();
-            checked.add(current);
+    public boolean step() {
+        Node current = nodes.remove();
+        checked.add(current);
 
-            int cx = current.x;
-            int cy = current.y;
+        int cx = current.x;
+        int cy = current.y;
 
-            if (cx == gx && cy == gy) {
-                return reconstructPath(current);
+        if (cx == gx && cy == gy) {
+            path = reconstructPath(current);
+            return true;
+        }
+
+        for (Node neighbor : graph.getNeighbors(current)) {
+            if (neighbor == null) {
+                continue;
             }
+            if (!checked.contains(neighbor)) {
+                int nx = neighbor.x;
+                int ny = neighbor.y;
 
-            for (Node neighbor : graph.getNeighbors(current)) {
-                if (neighbor == null) {
-                    continue;
-                }
-                if (!checked.contains(neighbor)) {
-                    int nx = neighbor.x;
-                    int ny = neighbor.y;
+                float dTest = d[cy][cx] + (cx == nx || cy == ny ? 1 : SQRT_2);
+                if (dTest < d[ny][nx]) {
+                    d[ny][nx] = dTest;
+                    neighbor.setParent(current);
 
-                    float dTest = d[cy][cx] + (cx == nx || cy == ny ? 1 : SQRT_2);
-                    if (dTest < d[ny][nx]) {
-                        d[ny][nx] = dTest;
-                        neighbor.setParent(current);
-
-                        nodes.update(neighbor);
-                    }
+                    nodes.update(neighbor);
                 }
             }
         }
 
-        return null;
+        return false;
+    }
+
+    @Override
+    public boolean hasNextStep() {
+        return !nodes.isEmpty();
+    }
+
+    @Override
+    public Iterable<Node> getOpenNodes() {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
+
+    @Override
+    public Iterable<Node> getClosedNodes() {
+        return checked;
     }
 
     /**

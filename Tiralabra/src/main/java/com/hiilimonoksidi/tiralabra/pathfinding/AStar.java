@@ -3,7 +3,6 @@ package com.hiilimonoksidi.tiralabra.pathfinding;
 import com.hiilimonoksidi.tiralabra.datastructures.HashSet;
 import com.hiilimonoksidi.tiralabra.datastructures.Heap;
 import com.hiilimonoksidi.tiralabra.graph.Node;
-import com.hiilimonoksidi.tiralabra.graph.Path;
 import com.hiilimonoksidi.tiralabra.misc.Calc;
 import java.util.Comparator;
 
@@ -48,55 +47,69 @@ public class AStar extends PathfindingAlgorithm {
         closed = new HashSet<>();
         open = new HashSet<>();
         openQueue = new Heap<>(new NodeComparator());
-    }
 
-    @Override
-    public Path search() {
         Node startNode = graph.get(start);
         openQueue.add(startNode);
         open.add(startNode);
+    }
 
-        while (!openQueue.isEmpty() && !stopped) {
-            Node current = openQueue.remove();
+    @Override
+    public boolean step() {
+        Node current = openQueue.remove();
 
-            open.remove(current);
-            closed.add(current);
+        open.remove(current);
+        closed.add(current);
 
-            int cx = current.x;
-            int cy = current.y;
+        int cx = current.x;
+        int cy = current.y;
 
-            if (cx == gx && cy == gy) {
-                return reconstructPath(current);
+        if (cx == gx && cy == gy) {
+            path = reconstructPath(current);
+            return true;
+        }
+
+        for (Node neighbor : graph.getNeighbors(cx, cy)) {
+            if (neighbor == null || closed.contains(neighbor)) {
+                continue;
             }
 
-            for (Node neighbor : graph.getNeighbors(cx, cy)) {
-                if (neighbor == null || closed.contains(neighbor)) {
-                    continue;
+            int nx = neighbor.x;
+            int ny = neighbor.y;
+
+            float gNeighbor = g[cy][cx] + (cx == nx || cy == ny ? 1 : SQRT_2);
+
+            boolean neighborOpen = open.contains(neighbor);
+            if (!neighborOpen || gNeighbor < g[ny][nx]) {
+                neighbor.setParent(current);
+
+                g[ny][nx] = gNeighbor;
+                f[ny][nx] = gNeighbor + Calc.dist(nx, ny, gx, gy);
+
+                if (neighborOpen) {
+                    openQueue.update(neighbor);
+                } else {
+                    openQueue.add(neighbor);
                 }
-
-                int nx = neighbor.x;
-                int ny = neighbor.y;
-
-                float gNeighbor = g[cy][cx] + (cx == nx || cy == ny ? 1 : SQRT_2);
-
-                boolean neighborOpen = open.contains(neighbor);
-                if (!neighborOpen || gNeighbor < g[ny][nx]) {
-                    neighbor.setParent(current);
-
-                    g[ny][nx] = gNeighbor;
-                    f[ny][nx] = gNeighbor + Calc.dist(nx, ny, gx, gy);
-
-                    if (neighborOpen) {
-                        openQueue.update(neighbor);
-                    } else {
-                        openQueue.add(neighbor);
-                    }
-                    open.add(neighbor);
-                }
+                open.add(neighbor);
             }
         }
 
-        return null;
+        return false;
+    }
+
+    @Override
+    public boolean hasNextStep() {
+        return !openQueue.isEmpty();
+    }
+
+    @Override
+    public Iterable<Node> getOpenNodes() {
+        return open;
+    }
+
+    @Override
+    public Iterable<Node> getClosedNodes() {
+        return closed;
     }
 
     /**
