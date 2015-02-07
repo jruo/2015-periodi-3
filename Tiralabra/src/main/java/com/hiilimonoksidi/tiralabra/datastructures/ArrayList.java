@@ -1,12 +1,14 @@
 package com.hiilimonoksidi.tiralabra.datastructures;
 
+import java.util.Iterator;
+
 /**
  * Lista.
  *
  * @author Janne Ruoho
  * @param <E> Listaan talletettavien elementtien tyyppi
  */
-public class ArrayList<E> {
+public class ArrayList<E> implements Iterable<E> {
 
     private Object[] elements;
     private int length = 16;
@@ -99,5 +101,29 @@ public class ArrayList<E> {
         Object[] tmp = new Object[length];
         System.arraycopy(elements, 0, tmp, 0, index);
         elements = tmp;
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new ListIterator();
+    }
+    
+    /**
+     * Iteraattori
+     */
+    public class ListIterator implements Iterator<E> {
+        
+        private int currentIndex = 0;
+
+        @Override
+        public boolean hasNext() {
+            return currentIndex < index;
+        }
+
+        @Override
+        public E next() {
+            return (E) elements[currentIndex++];
+        }
+        
     }
 }

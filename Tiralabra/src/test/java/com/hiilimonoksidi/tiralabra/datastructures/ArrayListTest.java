@@ -1,5 +1,6 @@
 package com.hiilimonoksidi.tiralabra.datastructures;
 
+import java.util.Iterator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -118,5 +119,29 @@ public class ArrayListTest {
         list.remove("1");
         list.remove("2");
         assertTrue(list.isEmpty());
+    }
+    
+    @Test
+    public void testIterator() {
+        ArrayList<String> testList = new ArrayList<>();
+        list.add("1");
+        list.add("2");
+        list.add("3");
+        list.add("4");
+        list.add("5");
+        
+        testList.add("1");
+        testList.add("2");
+        testList.add("3");
+        testList.add("4");
+        testList.add("5");
+        
+        int i = 0;
+        Iterator<String> it = list.iterator();
+        while (it.hasNext()) {
+            assertEquals(testList.get(i++), it.next());
+        }
+        
+        assertEquals(5, i);
     }
 }
