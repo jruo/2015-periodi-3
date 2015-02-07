@@ -1,5 +1,6 @@
 package com.hiilimonoksidi.tiralabra.pathfinding;
 
+import com.hiilimonoksidi.tiralabra.datastructures.HashSet;
 import com.hiilimonoksidi.tiralabra.graph.Graph;
 import com.hiilimonoksidi.tiralabra.graph.Node;
 import com.hiilimonoksidi.tiralabra.graph.Path;
@@ -15,6 +16,11 @@ import java.util.logging.Logger;
 public abstract class PathfindingAlgorithm {
 
     protected final float SQRT_2 = 1.41421356237f;
+
+    /**
+     * Tyhjä joukko
+     */
+    protected final HashSet<Node> emptySet = new HashSet<>();
 
     /**
      * Verkko, josta etsitään reitti
@@ -35,7 +41,7 @@ public abstract class PathfindingAlgorithm {
      * Löydetty polku
      */
     protected Path path;
-    
+
     /**
      * Sisältää tiedon, onko algoritmi pysäytetty
      */
@@ -76,17 +82,17 @@ public abstract class PathfindingAlgorithm {
      * @return Palauttaa tosi, jos tämä askel päätyi maaliin. Muussa tapauksessa
      * epätosi.
      */
-    public abstract boolean step();
+    protected abstract boolean searchStep();
 
     /**
      * Tarkistaa pystyykö algoritmin seuraavan askeleen suorittamaan.
      *
      * @return Tosi jos pystyy, epätosi muuten
      */
-    public abstract boolean hasNextStep();
-    
+    protected abstract boolean hasNextStep();
+
     public abstract Iterable<Node> getClosedNodes();
-    
+
     public abstract Iterable<Node> getOpenNodes();
 
     /**
@@ -96,11 +102,16 @@ public abstract class PathfindingAlgorithm {
      * Jos reittiä ei ole, palauttaa null.
      */
     public Path search() {
-        while (hasNextStep() && !stopped) {
-            if (step()) {
-                break;
-            }
+        while (step()) {
         }
+        return path;
+    }
+
+    public boolean step() {
+        return !stopped && hasNextStep() && !searchStep();
+    }
+
+    public Path getPath() {
         return path;
     }
 

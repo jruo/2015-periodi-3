@@ -181,7 +181,8 @@ public class InputPanel extends JPanel {
     }//GEN-LAST:event_jButtonBrowseActionPerformed
 
     private void jButtonStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartActionPerformed
-        mainWindow.setPanel(new AlgorithmTestingPanel(inputImageCanvas.getImage(),
+        mainWindow.setPanel(new AlgorithmTestingPanel(mainWindow,
+                                                      inputImageCanvas.getImage(),
                                                       inputImageCanvas.getStart(),
                                                       inputImageCanvas.getEnd()));
     }//GEN-LAST:event_jButtonStartActionPerformed

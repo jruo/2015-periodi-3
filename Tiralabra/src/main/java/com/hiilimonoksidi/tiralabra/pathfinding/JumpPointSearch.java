@@ -26,7 +26,7 @@ public class JumpPointSearch extends AStar {
     }
 
     @Override
-    public boolean step() {
+    public boolean searchStep() {
         Node current = openQueue.remove();
 
         int cx = current.x;

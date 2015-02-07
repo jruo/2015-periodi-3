@@ -1,5 +1,9 @@
 package com.hiilimonoksidi.tiralabra.application.gui;
 
+import com.hiilimonoksidi.tiralabra.graph.Node;
+import com.hiilimonoksidi.tiralabra.graph.Path;
+import com.hiilimonoksidi.tiralabra.misc.Point;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -9,9 +13,16 @@ import java.awt.image.BufferedImage;
  * @author Janne Ruoho
  */
 public class AlgorithmTestingImageCanvas extends javax.swing.JPanel {
-    
+
+    private final Color closedColor = new Color(0x9BBF41);
+    private final Color openColor = new Color(0x4154BF);
+    private final Color pathColor = new Color(0xE31B1B);
+
     private BufferedImage image;
-    
+    private Iterable<Node> closed;
+    private Iterable<Node> open;
+    private Path path;
+
     public AlgorithmTestingImageCanvas() {
         initComponents();
     }
@@ -42,11 +53,47 @@ public class AlgorithmTestingImageCanvas extends javax.swing.JPanel {
         setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
         revalidate();
     }
-    
+
+    public void setClosedNodes(Iterable<Node> closed) {
+        this.closed = closed;
+    }
+
+    public void setOpenNodes(Iterable<Node> open) {
+        this.open = open;
+    }
+
+    public void setPath(Path path) {
+        this.path = path;
+    }
+
     @Override
     public void paintComponent(Graphics g) {
-        if (image != null) {
-            g.drawImage(image, 0, 0, null);
+        if (image == null) {
+            return;
+        }
+        
+        g.setColor(Color.WHITE);
+        g.drawImage(image, 0, 0, null);
+
+        if (closed != null) {
+            g.setColor(closedColor);
+            for (Node c : closed) {
+                g.drawLine(c.x, c.y, c.x, c.y);
+            }
+        }
+
+        if (open != null) {
+            g.setColor(openColor);
+            for (Node o : open) {
+                g.drawLine(o.x, o.y, o.x, o.y);
+            }
+        }
+        
+        if (path != null) {
+            g.setColor(pathColor);
+            for (Point p : path.getPoints()) {
+                g.drawLine(p.x, p.y, p.x, p.y);
+            }
         }
     }
 

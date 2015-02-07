@@ -32,7 +32,7 @@ public class BreadthFirstSearch extends PathfindingAlgorithm {
     }
 
     @Override
-    public boolean step() {
+    public boolean searchStep() {
         Node current = open.dequeue();
 
         int cx = current.x;
@@ -63,7 +63,7 @@ public class BreadthFirstSearch extends PathfindingAlgorithm {
 
     @Override
     public Iterable<Node> getOpenNodes() {
-        throw new UnsupportedOperationException(); // TODO: implement
+        return open;
     }
 
     @Override

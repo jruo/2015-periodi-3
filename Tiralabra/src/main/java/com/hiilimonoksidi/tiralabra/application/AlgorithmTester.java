@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  *
  * @author Janne Ruoho
  */
-public class AlgorithmTester implements Runnable {
+public class AlgorithmTester {
 
     private final PathfindingAlgorithm algorithm;
     private final Graph graph;
@@ -39,7 +39,13 @@ public class AlgorithmTester implements Runnable {
      */
     public void start(int timeout) throws AlgorithmTimeoutException {
         try {
-            Thread thread = new Thread(this);
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    algorithm.init(graph, start, goal);
+                    path = algorithm.search();
+                }
+            });
 
             timer.start();
             thread.start();
@@ -57,17 +63,40 @@ public class AlgorithmTester implements Runnable {
         }
     }
 
+    /**
+     * Käynnistää testauksen, joka käy algoritmin läpi askel askeleelta odottaen
+     * joka askeleen välillä kontrollerin määrittämän ajan ja palauttaa sille
+     * käsittellyt ja käsittelyssä olevat solmut. Metodi ei mittaa aikaa eikä
+     * blockaa suoritusta. Algoritmin päätyttyä palauttaa polun kontrollerille.
+     *
+     * @param stepController Kontrolleri
+     */
+    public void start(final StepController stepController) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                algorithm.init(graph, start, goal);
+                while (algorithm.step()) {
+                    stepController.setOpenNodes(algorithm.getOpenNodes());
+                    stepController.setClosedNodes(algorithm.getClosedNodes());
+                    try {
+                        Thread.sleep(stepController.getDelay());
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(AlgorithmTester.class.getName()).log(Level.SEVERE, null, ex);
+                        System.exit(1);
+                    }
+                }
+                stepController.setPath(algorithm.getPath());
+            }
+        });
+        thread.start();
+    }
+
     public Path getPath() {
         return path;
     }
 
     public double getTimeElapsed() {
         return timer.getTime();
-    }
-
-    @Override
-    public void run() {
-        algorithm.init(graph, start, goal);
-        path = algorithm.search();
     }
 }

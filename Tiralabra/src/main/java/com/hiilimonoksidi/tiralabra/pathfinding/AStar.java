@@ -54,7 +54,7 @@ public class AStar extends PathfindingAlgorithm {
     }
 
     @Override
-    public boolean step() {
+    public boolean searchStep() {
         Node current = openQueue.remove();
 
         open.remove(current);

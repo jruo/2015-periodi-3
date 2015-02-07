@@ -1,5 +1,11 @@
 package com.hiilimonoksidi.tiralabra.application.gui;
 
+import com.hiilimonoksidi.tiralabra.application.AlgorithmTester;
+import com.hiilimonoksidi.tiralabra.application.StepController;
+import com.hiilimonoksidi.tiralabra.graph.Graph;
+import com.hiilimonoksidi.tiralabra.graph.Node;
+import com.hiilimonoksidi.tiralabra.graph.Path;
+import com.hiilimonoksidi.tiralabra.misc.GraphBuilder;
 import com.hiilimonoksidi.tiralabra.misc.Point;
 import com.hiilimonoksidi.tiralabra.pathfinding.PathfindingAlgorithm;
 import java.awt.image.BufferedImage;
@@ -11,15 +17,22 @@ import javax.swing.DefaultListModel;
  */
 public class AlgorithmTestingPanel extends javax.swing.JPanel {
 
+    private MainWindow mainWindow;
     private BufferedImage image;
     private Point start, end;
+    private Graph graph;
+    private int stepDelay;
+    private PathfindingAlgorithm currentAlgorithm;
 
-    public AlgorithmTestingPanel(BufferedImage image, Point start, Point end) {
+    public AlgorithmTestingPanel(MainWindow mainWindow, BufferedImage image, Point start, Point end) {
         initComponents();
+        this.mainWindow = mainWindow;
         this.image = image;
         this.start = start;
         this.end = end;
-        
+
+        graph = GraphBuilder.createFromImage(image);
+
         jPanelAlgorithmTestingImageCanvas.setImage(image);
     }
 
@@ -37,13 +50,18 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         jScrollPaneResults = new javax.swing.JScrollPane();
         jTextAreaResults = new javax.swing.JTextArea();
         jPanelOptions = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        jLabelSelect = new javax.swing.JLabel();
         jScrollPaneAlgorithms = new javax.swing.JScrollPane();
         jListAlgorithms = new javax.swing.JList();
         jCheckBoxVisualize = new javax.swing.JCheckBox();
+        jPanelButtons = new javax.swing.JPanel();
+        jButtonStop = new javax.swing.JButton();
         jButtonStart = new javax.swing.JButton();
+        jButtonExit = new javax.swing.JButton();
+        jPanelSpeed = new javax.swing.JPanel();
         jSliderSpeed = new javax.swing.JSlider();
         jLabelSpeed = new javax.swing.JLabel();
+        jPanelTime = new javax.swing.JPanel();
         jLabelTimeLimit = new javax.swing.JLabel();
         jTextFieldTimeLimit = new javax.swing.JTextField();
         jLabelSeconds = new javax.swing.JLabel();
@@ -74,14 +92,13 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
 
         jPanelOptions.setLayout(new java.awt.GridBagLayout());
 
-        jLabel1.setText("Select algorithm:");
+        jLabelSelect.setText("Select algorithm:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 10);
-        jPanelOptions.add(jLabel1, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 10);
+        jPanelOptions.add(jLabelSelect, gridBagConstraints);
 
         DefaultListModel<PathfindingAlgorithm.Type> listModel = new DefaultListModel<>();
         for (PathfindingAlgorithm.Type algo : PathfindingAlgorithm.Type.values()) {
@@ -95,11 +112,10 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 10);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 10);
         jPanelOptions.add(jScrollPaneAlgorithms, gridBagConstraints);
 
         jCheckBoxVisualize.setText("Visualize (no timing)");
@@ -111,61 +127,119 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 15);
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 15);
         jPanelOptions.add(jCheckBoxVisualize, gridBagConstraints);
 
+        jPanelButtons.setLayout(new java.awt.GridBagLayout());
+
+        jButtonStop.setText("Stop");
+        jButtonStop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonStopActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
+        jPanelButtons.add(jButtonStop, gridBagConstraints);
+
         jButtonStart.setText("Start");
+        jButtonStart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonStartActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+        jPanelButtons.add(jButtonStart, gridBagConstraints);
+
+        jButtonExit.setText("Exit");
+        jButtonExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonExitActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
+        jPanelButtons.add(jButtonExit, gridBagConstraints);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
-        jPanelOptions.add(jButtonStart, gridBagConstraints);
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(9, 10, 10, 10);
+        jPanelOptions.add(jPanelButtons, gridBagConstraints);
+
+        jPanelSpeed.setLayout(new java.awt.GridBagLayout());
 
         jSliderSpeed.setEnabled(false);
-        jSliderSpeed.setPreferredSize(new java.awt.Dimension(120, 23));
+        jSliderSpeed.setPreferredSize(new java.awt.Dimension(100, 23));
+        jSliderSpeed.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSliderSpeedStateChanged(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
-        jPanelOptions.add(jSliderSpeed, gridBagConstraints);
+        gridBagConstraints.weightx = 1.0;
+        jPanelSpeed.add(jSliderSpeed, gridBagConstraints);
 
         jLabelSpeed.setText("Speed:");
         jLabelSpeed.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
-        jPanelOptions.add(jLabelSpeed, gridBagConstraints);
+        jPanelSpeed.add(jLabelSpeed, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 10);
+        jPanelOptions.add(jPanelSpeed, gridBagConstraints);
+
+        jPanelTime.setLayout(new java.awt.GridBagLayout());
 
         jLabelTimeLimit.setText("Time limit:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
-        jPanelOptions.add(jLabelTimeLimit, gridBagConstraints);
+        jPanelTime.add(jLabelTimeLimit, gridBagConstraints);
 
         jTextFieldTimeLimit.setColumns(5);
         jTextFieldTimeLimit.setText("0");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
-        jPanelOptions.add(jTextFieldTimeLimit, gridBagConstraints);
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        jPanelTime.add(jTextFieldTimeLimit, gridBagConstraints);
 
         jLabelSeconds.setText("seconds");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
-        jPanelOptions.add(jLabelSeconds, gridBagConstraints);
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 0);
+        jPanelTime.add(jLabelSeconds, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 10);
+        jPanelOptions.add(jPanelTime, gridBagConstraints);
 
         add(jPanelOptions, java.awt.BorderLayout.LINE_END);
 
@@ -199,28 +273,131 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jCheckBoxVisualizeStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jCheckBoxVisualizeStateChanged
-        boolean s = jCheckBoxVisualize.isSelected();
-        jLabelSpeed.setEnabled(s);
-        jSliderSpeed.setEnabled(s);
-        jLabelTimeLimit.setEnabled(!s);
-        jTextFieldTimeLimit.setEnabled(!s);
-        jLabelSeconds.setEnabled(!s);
+        boolean visualize = jCheckBoxVisualize.isSelected();
+        toggleVisualizerOptions(visualize);
     }//GEN-LAST:event_jCheckBoxVisualizeStateChanged
 
+    private void toggleVisualizerOptions(boolean visualize) {
+        jLabelSpeed.setEnabled(visualize);
+        jSliderSpeed.setEnabled(visualize);
+        jLabelTimeLimit.setEnabled(!visualize);
+        jTextFieldTimeLimit.setEnabled(!visualize);
+        jLabelSeconds.setEnabled(!visualize);
+    }
+
+    private void disableOptions() {
+        jButtonStart.setEnabled(false);
+        jCheckBoxVisualize.setEnabled(false);
+
+        jLabelTimeLimit.setEnabled(false);
+        jTextFieldTimeLimit.setEnabled(false);
+        jLabelSeconds.setEnabled(false);
+    }
+
+    private void enableOptions() {
+        jButtonStart.setEnabled(true);
+        jCheckBoxVisualize.setEnabled(true);
+
+        toggleVisualizerOptions(jCheckBoxVisualize.isSelected());
+    }
+
+
+    private void jButtonStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartActionPerformed
+        start();
+    }//GEN-LAST:event_jButtonStartActionPerformed
+
+    private void jSliderSpeedStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSliderSpeedStateChanged
+        updateStepDelay();
+    }//GEN-LAST:event_jSliderSpeedStateChanged
+
+    private void jButtonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStopActionPerformed
+        stop();
+    }//GEN-LAST:event_jButtonStopActionPerformed
+
+    private void jButtonExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExitActionPerformed
+        stop();
+        mainWindow.setPanel(new InputPanel(mainWindow));
+    }//GEN-LAST:event_jButtonExitActionPerformed
+
+    private void stop() {
+        if (currentAlgorithm != null) {
+            currentAlgorithm.stop();
+        }
+    }
+
+    private void updateStepDelay() {
+        int val = jSliderSpeed.getValue();
+        stepDelay = 1; // TODO: aika
+    }
+
+    private void start() {
+        disableOptions();
+        updateStepDelay();
+
+        jPanelAlgorithmTestingImageCanvas.setPath(null);
+        jPanelAlgorithmTestingImageCanvas.repaint();
+
+        PathfindingAlgorithm.Type algorithm = getAlgorithm();
+        currentAlgorithm = algorithm.getInstance();
+        AlgorithmTester tester = new AlgorithmTester(currentAlgorithm, graph, start, end);
+
+        tester.start(new StepController() {
+
+            @Override
+            public void setOpenNodes(Iterable<Node> open) {
+                jPanelAlgorithmTestingImageCanvas.setOpenNodes(open);
+                jPanelAlgorithmTestingImageCanvas.repaint();
+            }
+
+            @Override
+            public void setClosedNodes(Iterable<Node> closed) {
+                jPanelAlgorithmTestingImageCanvas.setClosedNodes(closed);
+                jPanelAlgorithmTestingImageCanvas.repaint();
+            }
+
+            @Override
+            public void setPath(Path path) {
+                jPanelAlgorithmTestingImageCanvas.setPath(path);
+                jPanelAlgorithmTestingImageCanvas.repaint();
+                enableOptions();
+            }
+
+            @Override
+            public int getDelay() {
+                return stepDelay;
+            }
+        });
+    }
+
+    private PathfindingAlgorithm.Type getAlgorithm() {
+        int selected = jListAlgorithms.getSelectedIndex();
+        PathfindingAlgorithm.Type algorithm = PathfindingAlgorithm.Type.A_STAR;
+        for (PathfindingAlgorithm.Type a : PathfindingAlgorithm.Type.values()) {
+            if (selected-- == 0) {
+                algorithm = a;
+            }
+        }
+        return algorithm;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonExit;
     private javax.swing.JButton jButtonStart;
+    private javax.swing.JButton jButtonStop;
     private javax.swing.JCheckBox jCheckBoxVisualize;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelSeconds;
+    private javax.swing.JLabel jLabelSelect;
     private javax.swing.JLabel jLabelSpeed;
     private javax.swing.JLabel jLabelTimeLimit;
     private javax.swing.JList jListAlgorithms;
     private com.hiilimonoksidi.tiralabra.application.gui.AlgorithmTestingImageCanvas jPanelAlgorithmTestingImageCanvas;
+    private javax.swing.JPanel jPanelButtons;
     private javax.swing.JPanel jPanelCanvas;
     private javax.swing.JPanel jPanelImage;
     private javax.swing.JPanel jPanelOptions;
     private javax.swing.JPanel jPanelResults;
+    private javax.swing.JPanel jPanelSpeed;
+    private javax.swing.JPanel jPanelTime;
     private javax.swing.JScrollPane jScrollPaneAlgorithms;
     private javax.swing.JScrollPane jScrollPaneCanvas;
     private javax.swing.JScrollPane jScrollPaneResults;

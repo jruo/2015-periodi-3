@@ -26,7 +26,7 @@ public class DepthFirstSearch extends PathfindingAlgorithm {
     }
 
     @Override
-    public boolean step() {
+    public boolean searchStep() {
         Node current = open.pop();
         closed.add(current);
 
@@ -59,7 +59,7 @@ public class DepthFirstSearch extends PathfindingAlgorithm {
 
     @Override
     public Iterable<Node> getOpenNodes() {
-        throw new UnsupportedOperationException(); // TODO: implement
+        return open;
     }
 
     @Override

@@ -54,7 +54,7 @@ public class Dijkstra extends PathfindingAlgorithm {
     }
 
     @Override
-    public boolean step() {
+    public boolean searchStep() {
         Node current = nodes.remove();
         checked.add(current);
 
@@ -94,7 +94,7 @@ public class Dijkstra extends PathfindingAlgorithm {
 
     @Override
     public Iterable<Node> getOpenNodes() {
-        throw new UnsupportedOperationException(); // TODO: implement
+        return emptySet;
     }
 
     @Override
