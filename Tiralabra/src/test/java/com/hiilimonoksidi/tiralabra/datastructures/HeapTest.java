@@ -1,6 +1,9 @@
 package com.hiilimonoksidi.tiralabra.datastructures;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -122,6 +125,25 @@ public class HeapTest {
                 assertTrue(last <= root);
                 last = root;
             }
+        }
+    }
+    
+    @Test
+    public void testIterator() {
+        ArrayList<Integer> testList = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            testList.add(i);
+            heap.add(i);
+        }
+        
+        List<Integer> iterList = new java.util.ArrayList<>();
+        for (Integer i : heap) {
+            iterList.add(i);
+        }
+        Collections.sort(iterList);
+        
+        for (int i = 0; i < 20; i++) {
+            assertEquals(i, iterList.get(i), 0);
         }
     }
 }

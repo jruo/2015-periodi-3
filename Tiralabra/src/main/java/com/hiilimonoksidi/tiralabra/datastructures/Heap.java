@@ -1,6 +1,7 @@
 package com.hiilimonoksidi.tiralabra.datastructures;
 
 import java.util.Comparator;
+import java.util.Iterator;
 
 /**
  * Keko.
@@ -8,7 +9,7 @@ import java.util.Comparator;
  * @author Janne Ruoho
  * @param <E> Kekoon talletettavien elementtien tyyppi
  */
-public class Heap<E> {
+public class Heap<E> implements Iterable<E> {
 
     private Object[] array;
     private int index = 1;
@@ -310,5 +311,26 @@ public class Heap<E> {
             }
         }
         return ret;
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new HeapIterator();
+    }
+    
+    public class HeapIterator implements Iterator<E> {
+        
+        private int currentIndex = 1;
+
+        @Override
+        public boolean hasNext() {
+            return currentIndex < index;
+        }
+
+        @Override
+        public E next() {
+            return (E) array[currentIndex++];
+        }
+        
     }
 }
