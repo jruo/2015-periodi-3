@@ -14,6 +14,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
 /**
+ * Gui:n paneeli, jossa testataan algoritmeja.
  *
  * @author Janne Ruoho
  */
@@ -279,6 +280,11 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         toggleVisualizerOptions(jCheckBoxVisualize.isSelected());
     }//GEN-LAST:event_jCheckBoxVisualizeStateChanged
 
+    /**
+     * Piilottaa/näyttää visualisointiasetukset.
+     *
+     * @param visualize Piilota/näytä
+     */
     private void toggleVisualizerOptions(boolean visualize) {
         jLabelSpeed.setEnabled(visualize);
         jSliderSpeed.setEnabled(visualize);
@@ -287,6 +293,9 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         jLabelSeconds.setEnabled(!visualize);
     }
 
+    /**
+     * Piilottaa kontrollit suorituksen ajaksi.
+     */
     private void disableOptions() {
         jButtonStart.setEnabled(false);
         jCheckBoxVisualize.setEnabled(false);
@@ -296,6 +305,9 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         jLabelSeconds.setEnabled(false);
     }
 
+    /**
+     * Näyttää kontrollit suorituksen loputtua.
+     */
     private void enableOptions() {
         jButtonStart.setEnabled(true);
         jCheckBoxVisualize.setEnabled(true);
@@ -321,30 +333,40 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         mainWindow.setPanel(new InputPanel(mainWindow));
     }//GEN-LAST:event_jButtonBackActionPerformed
 
+    /**
+     * Pysäyttää algon.
+     */
     private void stop() {
         if (currentAlgorithm != null) {
             currentAlgorithm.stop();
         }
     }
 
+    /**
+     * Pivittää algoritmin nukkumisajan, kun se suoritetaan step-by-step
+     * -tilassa.
+     */
     private void updateStepDelay() {
         int val = 100 - jSliderSpeed.getValue();
         stepDelay = (int) (0.4047 * Math.exp(0.06197 * val) + 1.161);
     }
 
+    /**
+     * Käynnistää algoritmin testauksen.
+     */
     private void start() {
         disableOptions();
         updateStepDelay();
         jPanelAlgorithmTestingImageCanvas.clear();
 
         PathfindingAlgorithm.Type algorithm = getAlgorithm();
-        
+
         currentAlgorithm = algorithm.getInstance();
         AlgorithmTester tester = new AlgorithmTester(currentAlgorithm, graph, start, end);
 
         log("----------");
         log("Starting " + algorithm);
-        
+
         if (jCheckBoxVisualize.isSelected()) {
             tester.start(new StepControllerImpl());
         } else {
@@ -356,11 +378,11 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(mainWindow, "Enter valid time limit", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (AlgorithmTimeoutException ex) {
-                
+
             }
             enableOptions();
         }
-        
+
         if (tester.getPath() != null) {
             log(String.format("Path length: %.0f", tester.getPath().getLength()));
         } else {
@@ -369,6 +391,11 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
 
     }
 
+    /**
+     * Muuttaa käyttäjän valinnan oikeaksi algoksi.
+     *
+     * @return Valittu algo
+     */
     private PathfindingAlgorithm.Type getAlgorithm() {
         int selected = jListAlgorithms.getSelectedIndex();
         PathfindingAlgorithm.Type algorithm = PathfindingAlgorithm.Type.A_STAR;
@@ -379,7 +406,12 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         }
         return algorithm;
     }
-    
+
+    /**
+     * Kirjoittaa rivin ikkunan lokiin.
+     *
+     * @param line Rivi
+     */
     private void log(String line) {
         jTextAreaResults.append("\n" + line);
     }
@@ -410,10 +442,10 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextFieldTimeLimit;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Kontrolleri step-by-step -suoritustilalle.
+     */
     private class StepControllerImpl implements StepController {
-
-        public StepControllerImpl() {
-        }
 
         @Override
         public void setOpenNodes(Iterable<Node> open) {
@@ -426,14 +458,14 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
             jPanelAlgorithmTestingImageCanvas.setClosedNodes(closed);
             jPanelAlgorithmTestingImageCanvas.repaint();
         }
-        
+
         @Override
         public void setPath(Path path) {
             jPanelAlgorithmTestingImageCanvas.setPath(path);
             jPanelAlgorithmTestingImageCanvas.repaint();
             enableOptions();
         }
-        
+
         @Override
         public int getDelay() {
             return stepDelay;

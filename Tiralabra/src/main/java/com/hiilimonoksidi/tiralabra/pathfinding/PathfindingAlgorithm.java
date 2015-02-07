@@ -91,8 +91,18 @@ public abstract class PathfindingAlgorithm {
      */
     protected abstract boolean hasNextStep();
 
+    /**
+     * Palauttaa algoritmin jo tutkimat solmut.
+     *
+     * @return Tutkitut solmut
+     */
     public abstract Iterable<Node> getClosedNodes();
 
+    /**
+     * Palauttaa solmut, jota algoritmi tutkii.
+     *
+     * @return Tutkittavat solmut
+     */
     public abstract Iterable<Node> getOpenNodes();
 
     /**
@@ -107,10 +117,21 @@ public abstract class PathfindingAlgorithm {
         return path;
     }
 
+    /**
+     * Liikkuu yhden askeleen eteenpäin.
+     *
+     * @return Tosi jos askel onnistui, epätosi jos ei onnistunut tai etsintä
+     * loppui.
+     */
     public boolean step() {
         return !stopped && hasNextStep() && !searchStep();
     }
 
+    /**
+     * Palauttaa löydetyn polun.
+     *
+     * @return Polku
+     */
     public Path getPath() {
         return path;
     }
@@ -146,6 +167,9 @@ public abstract class PathfindingAlgorithm {
         }
     }
 
+    /**
+     * Algoritmit.
+     */
     public enum Type {
 
         A_STAR(AStar.class, "A*"),
@@ -162,6 +186,11 @@ public abstract class PathfindingAlgorithm {
             this.name = name;
         }
 
+        /**
+         * Luo algoritmista olion.
+         * 
+         * @return Algoritmi
+         */
         public PathfindingAlgorithm getInstance() {
             try {
                 return clazz.newInstance();

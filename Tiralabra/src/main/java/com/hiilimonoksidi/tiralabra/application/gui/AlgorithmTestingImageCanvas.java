@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 /**
+ * Piirtää gui:n testauspaneelissa kuvan ja reitinhaun visualisoinnin.
  *
  * @author Janne Ruoho
  */
@@ -53,7 +54,10 @@ public class AlgorithmTestingImageCanvas extends javax.swing.JPanel {
         setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
         revalidate();
     }
-    
+
+    /**
+     * Pyyhkii piirustukset.
+     */
     public void clear() {
         closed = null;
         open = null;
@@ -78,7 +82,7 @@ public class AlgorithmTestingImageCanvas extends javax.swing.JPanel {
         if (image == null) {
             return;
         }
-        
+
         g.setColor(Color.WHITE);
         g.drawImage(image, 0, 0, null);
 
@@ -95,7 +99,7 @@ public class AlgorithmTestingImageCanvas extends javax.swing.JPanel {
                 g.drawLine(o.x, o.y, o.x, o.y);
             }
         }
-        
+
         if (path != null) {
             g.setColor(pathColor);
             for (Point p : path.getPoints()) {

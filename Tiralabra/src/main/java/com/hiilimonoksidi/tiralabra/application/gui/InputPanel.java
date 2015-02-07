@@ -181,6 +181,13 @@ public class InputPanel extends JPanel {
     }//GEN-LAST:event_jButtonBrowseActionPerformed
 
     private void jButtonStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartActionPerformed
+        start();
+    }//GEN-LAST:event_jButtonStartActionPerformed
+
+    /**
+     * Tarkistaa että käyttäjä on valinnut kaiken ja siirtyy testauspaneeliin
+     */
+    private void start() throws HeadlessException {
         if (inputImageCanvas.getImage() == null
             || inputImageCanvas.getStart() == null
             || inputImageCanvas.getEnd() == null) {
@@ -191,7 +198,7 @@ public class InputPanel extends JPanel {
                                                       inputImageCanvas.getImage(),
                                                       inputImageCanvas.getStart(),
                                                       inputImageCanvas.getEnd()));
-    }//GEN-LAST:event_jButtonStartActionPerformed
+    }
 
     /**
      * Näyttää tiedostonavausikkunan ja lataa käyttäjän haluaman kuvan
