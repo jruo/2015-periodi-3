@@ -1,12 +1,14 @@
 package com.hiilimonoksidi.tiralabra.datastructures;
 
+import java.util.Iterator;
+
 /**
  * Kahteen suuntaan linkitetty lista.
  *
  * @author Janne Ruoho
  * @param <E> Listaan talletettavien elementtien tyyppi.
  */
-public class LinkedList<E> {
+public class LinkedList<E> implements Iterable<E> {
 
     private Entry<E> head;
     private Entry<E> tail;
@@ -136,6 +138,11 @@ public class LinkedList<E> {
         return size == 0;
     }
 
+    @Override
+    public Iterator<E> iterator() {
+        return new ListIterator();
+    }
+
     /**
      * Listan alkio, joka sisältää siihen tallennetun elementin sekä viittauksen
      * edelliseen ja seuraavaan alkioon listassa.
@@ -150,6 +157,26 @@ public class LinkedList<E> {
 
         public Entry(T element) {
             this.element = element;
+        }
+    }
+    
+    /**
+     * Iteraattori.
+     */
+    public class ListIterator implements Iterator<E> {
+        
+        private Entry<E> current = head;
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public E next() {
+            E elem = current.element;
+            current = current.next;
+            return elem;
         }
     }
 }

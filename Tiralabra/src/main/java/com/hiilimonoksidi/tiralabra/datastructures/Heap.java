@@ -318,6 +318,9 @@ public class Heap<E> implements Iterable<E> {
         return new HeapIterator();
     }
     
+    /**
+     * Iteraattori.
+     */
     public class HeapIterator implements Iterator<E> {
         
         private int currentIndex = 1;
