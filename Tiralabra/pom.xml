@@ -26,6 +26,15 @@
                     </archive>
                 </configuration>
             </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.1</version>
+                <configuration>
+                    <destDir>../../../../Doc/javadoc/</destDir>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     
