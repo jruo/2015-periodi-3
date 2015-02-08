@@ -10,6 +10,8 @@ import com.hiilimonoksidi.tiralabra.misc.GraphBuilder;
 import com.hiilimonoksidi.tiralabra.misc.Point;
 import com.hiilimonoksidi.tiralabra.pathfinding.PathfindingAlgorithm;
 import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -27,6 +29,8 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
     private Graph graph;
     private int stepDelay;
     private PathfindingAlgorithm currentAlgorithm;
+    private boolean canvasDirty = true;
+    private boolean painting = true;
 
     public AlgorithmTestingPanel(MainWindow mainWindow, BufferedImage image, Point start, Point end) {
         initComponents();
@@ -36,8 +40,10 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         this.end = end;
 
         graph = GraphBuilder.createFromImage(image);
-
         jPanelAlgorithmTestingImageCanvas.setImage(image);
+
+        Thread painter = new Thread(new CanvasPainter());
+        painter.start();
     }
 
     /**
@@ -357,6 +363,7 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
 
     private void jButtonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBackActionPerformed
         stop();
+        painting = false;
         mainWindow.setPanel(new InputPanel(mainWindow));
     }//GEN-LAST:event_jButtonBackActionPerformed
 
@@ -497,19 +504,19 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         @Override
         public void setOpenNodes(Iterable<Node> open) {
             jPanelAlgorithmTestingImageCanvas.setOpenNodes(open);
-            jPanelAlgorithmTestingImageCanvas.repaint();
+            canvasDirty = true;
         }
 
         @Override
         public void setClosedNodes(Iterable<Node> closed) {
             jPanelAlgorithmTestingImageCanvas.setClosedNodes(closed);
-            jPanelAlgorithmTestingImageCanvas.repaint();
+            canvasDirty = true;
         }
 
         @Override
         public void setPath(Path path) {
             jPanelAlgorithmTestingImageCanvas.setPath(path);
-            jPanelAlgorithmTestingImageCanvas.repaint();
+            canvasDirty = true;
             enableOptions();
             logPath(path);
         }
@@ -517,6 +524,45 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         @Override
         public int getDelay() {
             return stepDelay;
+        }
+    }
+
+    /**
+     * Huolehtii kuvan päivityksestä kun se on tarpeen.
+     */
+    private class CanvasPainter implements Runnable {
+
+        @Override
+        public void run() {
+            long start = System.nanoTime();
+            while (painting) {
+                if (canvasDirty) {
+                    jPanelAlgorithmTestingImageCanvas.repaint();
+                    canvasDirty = false;
+                }
+                long end = System.nanoTime();
+                double sleep = ((1 / 60d) * 1000000000d) - (end - start);
+
+                start = System.nanoTime();
+
+                int millis = (int) (sleep / 1000000f);
+                int nanos = (int) (((sleep / 1000000f) - millis) * 1000000);
+                if (millis < 0) {
+                    millis = 0;
+                }
+                if (nanos > 999999) {
+                    nanos = 999999;
+                }
+                if (nanos < 0) {
+                    nanos = 0;
+                }
+
+                try {
+                    Thread.sleep(millis, nanos);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(AlgorithmTestingPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
 }

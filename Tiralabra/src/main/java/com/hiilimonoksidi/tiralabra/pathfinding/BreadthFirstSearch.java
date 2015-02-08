@@ -17,24 +17,31 @@ public class BreadthFirstSearch extends PathfindingAlgorithm {
     private Queue<Node> open;
 
     /**
-     * Käsitellyt solmut.
+     * Käsitellyt ja käsittelyä odottavat solmut
+     */
+    private HashSet<Node> checked;
+    
+    /**
+     * Käsitellyt solmut
      */
     private HashSet<Node> closed;
 
     @Override
     protected void init() {
         open = new Queue<>();
+        checked = new HashSet<>();
         closed = new HashSet<>();
 
         Node startNode = graph.get(start);
-        closed.add(startNode);
+        checked.add(startNode);
         open.enqueue(startNode);
     }
 
     @Override
     public boolean searchStep() {
         Node current = open.dequeue();
-
+        closed.add(current);
+        
         int cx = current.x;
         int cy = current.y;
 
@@ -44,12 +51,12 @@ public class BreadthFirstSearch extends PathfindingAlgorithm {
         }
 
         for (Node neighbor : graph.getNeighbors(cx, cy)) {
-            if (neighbor == null || closed.contains(neighbor)) {
+            if (neighbor == null || checked.contains(neighbor)) {
                 continue;
             }
 
             neighbor.setParent(current);
-            closed.add(neighbor);
+            checked.add(neighbor);
             open.enqueue(neighbor);
         }
 

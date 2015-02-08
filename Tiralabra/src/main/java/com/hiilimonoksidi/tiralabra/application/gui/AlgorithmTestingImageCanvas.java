@@ -1,5 +1,6 @@
 package com.hiilimonoksidi.tiralabra.application.gui;
 
+import com.hiilimonoksidi.tiralabra.datastructures.HashSet;
 import com.hiilimonoksidi.tiralabra.graph.Node;
 import com.hiilimonoksidi.tiralabra.graph.Path;
 import com.hiilimonoksidi.tiralabra.misc.Point;
@@ -25,13 +26,20 @@ public class AlgorithmTestingImageCanvas extends javax.swing.JPanel {
     private BufferedImage canvasImage, originalImage;
     private Iterable<Node> closed;
     private Iterable<Node> open;
+    private HashSet<Node> drawnClosed;
+    private HashSet<Node> drawnOpen;
+    private HashSet<Point> drawnPath;
     private Path path;
 
     private Graphics2D imageGraphics;
     private float zoom = 1;
+    private boolean dirty = true;
 
     public AlgorithmTestingImageCanvas() {
         initComponents();
+        drawnClosed = new HashSet<>();
+        drawnOpen = new HashSet<>();
+        drawnPath = new HashSet<>();
     }
 
     /**
@@ -69,6 +77,10 @@ public class AlgorithmTestingImageCanvas extends javax.swing.JPanel {
         closed = null;
         open = null;
         path = null;
+        drawnClosed = new HashSet<>();
+        drawnOpen = new HashSet<>();
+        drawnPath = new HashSet<>();
+        dirty = true;
         repaint();
     }
 
@@ -98,27 +110,39 @@ public class AlgorithmTestingImageCanvas extends javax.swing.JPanel {
 
         imageGraphics = canvasImage.createGraphics();
 
-        imageGraphics.setColor(Color.WHITE);
-        imageGraphics.drawImage(originalImage, 0, 0, null);
+        if (dirty) {
+            imageGraphics.setColor(Color.WHITE);
+            imageGraphics.drawImage(originalImage, 0, 0, null);
+            dirty = false;
+        }
+        
+        if (open != null) {
+            imageGraphics.setColor(openColor);
+            for (Node o : open) {
+                if (!drawnOpen.contains(o)) {
+                    imageGraphics.drawLine(o.x, o.y, o.x, o.y);
+                    drawnOpen.add(o);
+                }
+            }
+        }
 
         if (closed != null) {
             imageGraphics.setColor(closedColor);
             for (Node c : closed) {
-                imageGraphics.drawLine(c.x, c.y, c.x, c.y);
-            }
-        }
-
-        if (open != null) {
-            imageGraphics.setColor(openColor);
-            for (Node o : open) {
-                imageGraphics.drawLine(o.x, o.y, o.x, o.y);
+                if (!drawnClosed.contains(c)) {
+                    imageGraphics.drawLine(c.x, c.y, c.x, c.y);
+                    drawnClosed.add(c);
+                }
             }
         }
 
         if (path != null) {
             imageGraphics.setColor(pathColor);
             for (Point p : path.getPoints()) {
-                imageGraphics.drawLine(p.x, p.y, p.x, p.y);
+                if (!drawnPath.contains(p)) {
+                    imageGraphics.drawLine(p.x, p.y, p.x, p.y);
+                    drawnPath.add(p);
+                }
             }
         }
 
