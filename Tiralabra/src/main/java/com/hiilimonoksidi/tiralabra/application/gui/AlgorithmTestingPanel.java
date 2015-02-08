@@ -73,6 +73,8 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         jScrollPaneCanvas = new javax.swing.JScrollPane();
         jPanelCanvas = new javax.swing.JPanel();
         jPanelAlgorithmTestingImageCanvas = new com.hiilimonoksidi.tiralabra.application.gui.AlgorithmTestingImageCanvas();
+        jLabel1 = new javax.swing.JLabel();
+        jSlider1 = new javax.swing.JSlider();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -268,11 +270,35 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         jScrollPaneCanvas.setViewportView(jPanelCanvas);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 5, 10);
         jPanelImage.add(jScrollPaneCanvas, gridBagConstraints);
+
+        jLabel1.setText("Zoom:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 10, 0);
+        jPanelImage.add(jLabel1, gridBagConstraints);
+
+        jSlider1.setMajorTickSpacing(50);
+        jSlider1.setPaintTicks(true);
+        jSlider1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider1StateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 10, 10);
+        jPanelImage.add(jSlider1, gridBagConstraints);
 
         add(jPanelImage, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -334,6 +360,12 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
         mainWindow.setPanel(new InputPanel(mainWindow));
     }//GEN-LAST:event_jButtonBackActionPerformed
 
+    private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
+        int val = jSlider1.getValue();
+        float zoom = (float) Math.round(0.2 * Math.exp(0.0322 * val) * 100) / 100f;
+        jPanelAlgorithmTestingImageCanvas.setZoom(zoom);
+    }//GEN-LAST:event_jSlider1StateChanged
+
     /**
      * Pysäyttää algon.
      */
@@ -388,7 +420,7 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
 
     /**
      * Printtaa tiedon polusta lokiin.
-     * 
+     *
      * @param path Polku
      */
     private void logPath(Path path) {
@@ -434,6 +466,7 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButtonStart;
     private javax.swing.JButton jButtonStop;
     private javax.swing.JCheckBox jCheckBoxVisualize;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelSeconds;
     private javax.swing.JLabel jLabelSelect;
     private javax.swing.JLabel jLabelSpeed;
@@ -450,6 +483,7 @@ public class AlgorithmTestingPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPaneAlgorithms;
     private javax.swing.JScrollPane jScrollPaneCanvas;
     private javax.swing.JScrollPane jScrollPaneResults;
+    private javax.swing.JSlider jSlider1;
     private javax.swing.JSlider jSliderSpeed;
     private javax.swing.JTextArea jTextAreaResults;
     private javax.swing.JTextField jTextFieldTimeLimit;

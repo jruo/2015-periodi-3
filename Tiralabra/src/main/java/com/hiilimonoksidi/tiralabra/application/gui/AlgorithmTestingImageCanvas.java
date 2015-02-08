@@ -6,7 +6,10 @@ import com.hiilimonoksidi.tiralabra.misc.Point;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 
 /**
  * Piirtää gui:n testauspaneelissa kuvan ja reitinhaun visualisoinnin.
@@ -19,10 +22,13 @@ public class AlgorithmTestingImageCanvas extends javax.swing.JPanel {
     private final Color openColor = new Color(0x4154BF);
     private final Color pathColor = new Color(0xE31B1B);
 
-    private BufferedImage image;
+    private BufferedImage canvasImage, originalImage;
     private Iterable<Node> closed;
     private Iterable<Node> open;
     private Path path;
+
+    private Graphics2D imageGraphics;
+    private float zoom = 1;
 
     public AlgorithmTestingImageCanvas() {
         initComponents();
@@ -50,7 +56,8 @@ public class AlgorithmTestingImageCanvas extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     public void setImage(BufferedImage image) {
-        this.image = image;
+        originalImage = image;
+        canvasImage = copyBufferedImage(image);
         setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
         revalidate();
     }
@@ -63,6 +70,12 @@ public class AlgorithmTestingImageCanvas extends javax.swing.JPanel {
         open = null;
         path = null;
         repaint();
+    }
+
+    public void setZoom(float zoom) {
+        this.zoom = zoom;
+        setPreferredSize(new Dimension((int) (canvasImage.getWidth() * zoom), (int) (canvasImage.getHeight() * zoom)));
+        revalidate();
     }
 
     public void setClosedNodes(Iterable<Node> closed) {
@@ -79,33 +92,52 @@ public class AlgorithmTestingImageCanvas extends javax.swing.JPanel {
 
     @Override
     public void paintComponent(Graphics g) {
-        if (image == null) {
+        if (canvasImage == null) {
             return;
         }
 
-        g.setColor(Color.WHITE);
-        g.drawImage(image, 0, 0, null);
+        imageGraphics = canvasImage.createGraphics();
+
+        imageGraphics.setColor(Color.WHITE);
+        imageGraphics.drawImage(originalImage, 0, 0, null);
 
         if (closed != null) {
-            g.setColor(closedColor);
+            imageGraphics.setColor(closedColor);
             for (Node c : closed) {
-                g.drawLine(c.x, c.y, c.x, c.y);
+                imageGraphics.drawLine(c.x, c.y, c.x, c.y);
             }
         }
 
         if (open != null) {
-            g.setColor(openColor);
+            imageGraphics.setColor(openColor);
             for (Node o : open) {
-                g.drawLine(o.x, o.y, o.x, o.y);
+                imageGraphics.drawLine(o.x, o.y, o.x, o.y);
             }
         }
 
         if (path != null) {
-            g.setColor(pathColor);
+            imageGraphics.setColor(pathColor);
             for (Point p : path.getPoints()) {
-                g.drawLine(p.x, p.y, p.x, p.y);
+                imageGraphics.drawLine(p.x, p.y, p.x, p.y);
             }
         }
+
+        Graphics2D g2 = (Graphics2D) g;
+        g2.scale(zoom, zoom);
+        g2.drawImage(canvasImage, 0, 0, null);
+    }
+
+    /**
+     * Kopioi kuvan.
+     *
+     * @param bufferedImage kopioitava
+     * @return kopio
+     */
+    private BufferedImage copyBufferedImage(BufferedImage bufferedImage) {
+        ColorModel cm = bufferedImage.getColorModel();
+        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+        WritableRaster raster = bufferedImage.copyData(null);
+        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
