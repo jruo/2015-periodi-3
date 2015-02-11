@@ -32,7 +32,7 @@ public class Graph {
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                nodes[j][i] = new Node(graph.nodes[j][i]);
+                nodes[i][j] = new Node(graph.nodes[i][j]);
             }
         }
     }
