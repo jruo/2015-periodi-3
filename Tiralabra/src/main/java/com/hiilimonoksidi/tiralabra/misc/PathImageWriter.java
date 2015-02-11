@@ -24,15 +24,16 @@ public class PathImageWriter {
      * @param originalImage Kuva jonka päälle polku piirretään
      * @param path Polku
      * @param algorithm Algoritmi, jonka mukaan kuva nimetään
+     * @return Tosi jos kirjoitus onnistui, epätosi muuten
      */
-    public static void write(File outputFolder, BufferedImage originalImage, Path path, PathfindingAlgorithm.Type algorithm) {
+    public static boolean write(File outputFolder, BufferedImage originalImage, Path path, PathfindingAlgorithm.Type algorithm) {
         if (!testOutput(outputFolder)) {
-            return;
+            return false;
         }
 
         BufferedImage image = copyImage(originalImage);
         drawPath(path, image);
-        saveImage(outputFolder, algorithm, image);
+        return saveImage(outputFolder, algorithm, image);
     }
 
     /**
@@ -41,15 +42,16 @@ public class PathImageWriter {
      * @param outputFolder Tallennuskansio
      * @param algorithm Algoritmi, jonka mukaan kuva nimetään
      * @param image Itse kuva
+     * @return Tosi jos onnistui, epätosi muuten.
      */
-    private static void saveImage(File outputFolder, PathfindingAlgorithm.Type algorithm, BufferedImage image) {
+    private static boolean saveImage(File outputFolder, PathfindingAlgorithm.Type algorithm, BufferedImage image) {
         File outputFile = new File(outputFolder.getAbsolutePath() + File.separator + algorithm.name() + ".png");
 
         try {
             ImageIO.write(image, "png", outputFile);
-            System.out.println("Saved output image to " + outputFile.getAbsoluteFile());
+            return true;
         } catch (IOException ex) {
-            System.out.println("Could not write output image: " + ex.getMessage());
+            return false;
         }
     }
 
