@@ -169,7 +169,7 @@ public final class CLIApplication {
         try {
             return PathfindingAlgorithm.Type.valueOf(name);
         } catch (IllegalArgumentException ex) {
-            print("Invalid algorithn: " + name, true);
+            print("Invalid algorithm: " + name, true);
             System.exit(1);
             return null;
         }
