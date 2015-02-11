@@ -2,6 +2,7 @@ package com.hiilimonoksidi.tiralabra.application;
 
 import com.hiilimonoksidi.tiralabra.graph.Graph;
 import com.hiilimonoksidi.tiralabra.graph.Path;
+import com.hiilimonoksidi.tiralabra.misc.Arguments;
 import com.hiilimonoksidi.tiralabra.misc.GraphBuilder;
 import com.hiilimonoksidi.tiralabra.misc.PathImageWriter;
 import com.hiilimonoksidi.tiralabra.misc.Point;
@@ -18,21 +19,40 @@ import javax.imageio.ImageIO;
  *
  * @author Janne Ruoho
  */
-public class CLIApplication {
+public final class CLIApplication {
 
-    private final File inputFile, outputFolder;
-    private final Point start, goal;
-    private final int timeout;
+    private File inputFile, outputFolder;
+    private Point start, goal;
+    private int timeout;
 
     private BufferedImage image;
     private Graph graph;
 
-    public CLIApplication(File inputFile, File outputFile, Point start, Point goal, int timeout) {
-        this.inputFile = inputFile;
-        this.outputFolder = outputFile;
-        this.start = start;
-        this.goal = goal;
-        this.timeout = timeout;
+    public CLIApplication(Arguments arguments) {
+        String inputArgument = arguments.getArgument("-i");
+        String outputArgument = arguments.getArgument("-o");
+        String startArgument = arguments.getArgument("-s");
+        String goalArgument = arguments.getArgument("-g");
+        String timeArgument = arguments.getArgument("-t");
+
+        if (inputArgument != null && startArgument != null && goalArgument != null) {
+            inputFile = new File(inputArgument);
+            outputFolder = outputArgument != null ? new File(outputArgument) : null;
+            timeout = parseArgumentTimeLimit(timeArgument);
+
+            try {
+                start = new Point(startArgument);
+                goal = new Point(goalArgument);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                System.exit(1);
+            }
+
+            start();
+        } else {
+            System.out.println("Not enough arguments. Required: -i -s -g");
+            System.exit(1);
+        }
     }
 
     /**
@@ -102,6 +122,14 @@ public class CLIApplication {
             return null;
         } finally {
             System.out.println("----------");
+        }
+    }
+
+    private int parseArgumentTimeLimit(String timelimit) {
+        try {
+            return timelimit != null ? Integer.parseInt(timelimit) : 0;
+        } catch (NumberFormatException ex) {
+            return 0;
         }
     }
 }
