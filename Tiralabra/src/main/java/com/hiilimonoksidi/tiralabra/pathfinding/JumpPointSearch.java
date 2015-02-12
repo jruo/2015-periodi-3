@@ -49,6 +49,10 @@ public class JumpPointSearch extends AStar {
             if (jumped != null) {
                 int jx = jumped.x;
                 int jy = jumped.y;
+                
+                if (!graph.isValidNode(jx, jy)) {
+                    continue;
+                }
 
                 float gJumped = g[cy][cx] + Calc.dist(cx, cy, jx, jy);
 

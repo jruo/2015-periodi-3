@@ -296,7 +296,7 @@ public class Graph {
      * @param y Solmun y
      * @return Tosi jos ja vain jos kuuluu, epätosi muutoin
      */
-    private boolean isValidNode(int x, int y) {
+    public boolean isValidNode(int x, int y) {
         return x >= 0 && y >= 0 && y < height && x < width;
     }
 
