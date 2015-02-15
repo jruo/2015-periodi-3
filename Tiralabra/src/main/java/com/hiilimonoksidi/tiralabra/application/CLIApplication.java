@@ -165,6 +165,12 @@ public final class CLIApplication {
         }
     }
 
+    /**
+     * Muuttaa merkkijonon algoritmiksi.
+     * 
+     * @param name Algoritmin nimi
+     * @return Algoritmi tai null jos sitä ei ole olemassa
+     */
     private PathfindingAlgorithm.Type parseAlgorithm(String name) {
         try {
             return PathfindingAlgorithm.Type.valueOf(name);

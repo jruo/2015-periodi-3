@@ -49,11 +49,7 @@ public class Graph {
      * @return Solmu sijainnissa p
      */
     public Node get(Point p) {
-        if (isValidNode(p.x, p.y)) {
-            return nodes[p.y][p.x];
-        } else {
-            return new Node(p.x, p.y, false);
-        }
+        return get(p.x, p.y);
     }
 
     public Node get(int x, int y) {
@@ -77,10 +73,6 @@ public class Graph {
     public Node[] getNeighbors(int x, int y) {
         Node[] neighbors = new Node[8];
 
-        if (!nodes[y][x].clear) {
-            return neighbors;
-        }
-
         Node north = getNeighborAtDirection(x, y, Direction.NORTH);
         Node east = getNeighborAtDirection(x, y, Direction.EAST);
         Node south = getNeighborAtDirection(x, y, Direction.SOUTH);
@@ -90,73 +82,33 @@ public class Graph {
         Node southeast = getNeighborAtDirection(x, y, Direction.SOUTHEAST);
         Node southwest = getNeighborAtDirection(x, y, Direction.SOUTHWEST);
 
-        boolean northClear = false;
-        boolean eastClear = false;
-        boolean southClear = false;
-        boolean westClear = false;
-
-        if (north != null && north.clear) {
-            neighbors[0] = north;
-            northClear = true;
-        }
-        if (east != null && east.clear) {
-            neighbors[1] = east;
-            eastClear = true;
-        }
-        if (south != null && south.clear) {
-            neighbors[2] = south;
-            southClear = true;
-        }
-        if (west != null && west.clear) {
-            neighbors[3] = west;
-            westClear = true;
-        }
-
-        if (northeast != null && northeast.clear && (northClear || eastClear)) {
-            neighbors[4] = northeast;
-        }
-        if (northwest != null && northwest.clear && (northClear || westClear)) {
-            neighbors[5] = northwest;
-        }
-        if (southeast != null && southeast.clear && (southClear || eastClear)) {
-            neighbors[6] = southeast;
-        }
-        if (southwest != null && southwest.clear && (southClear || westClear)) {
-            neighbors[7] = southwest;
-        }
+        neighbors[0] = north.clear ? north : null;
+        neighbors[1] = east.clear ? east : null;
+        neighbors[2] = south.clear ? south : null;
+        neighbors[3] = west.clear ? west : null;
+        neighbors[4] = northeast.clear && (north.clear || east.clear) ? northeast : null;
+        neighbors[5] = northwest.clear && (north.clear || west.clear) ? northwest : null;
+        neighbors[6] = southeast.clear && (south.clear || east.clear) ? southeast : null;
+        neighbors[7] = southwest.clear && (south.clear || west.clear) ? southwest : null;
 
         return neighbors;
     }
-    
+
+    /**
+     * Palauttaa solmun vapaat naapurit, jotka ovat suoraan sen yllä, alla tai
+     * sivuilla.
+     *
+     * @param node Solmu, jonka naapurit halutaan.
+     * @return Lista naapureista
+     */
     public Node[] getOrthogonalNeighbors(Node node) {
         return getOrthogonalNeighbors(node.x, node.y);
     }
-    
+
     public Node[] getOrthogonalNeighbors(int x, int y) {
+        Node[] allNeighbors = getNeighbors(x, y);
         Node[] neighbors = new Node[4];
-        
-        if (!nodes[y][x].clear) {
-            return neighbors;
-        }
-        
-        Node north = getNeighborAtDirection(x, y, Direction.NORTH);
-        Node east = getNeighborAtDirection(x, y, Direction.EAST);
-        Node south = getNeighborAtDirection(x, y, Direction.SOUTH);
-        Node west = getNeighborAtDirection(x, y, Direction.WEST);
-        
-        if (north != null && north.clear) {
-            neighbors[0] = north;
-        }
-        if (east != null && east.clear) {
-            neighbors[1] = east;
-        }
-        if (south != null && south.clear) {
-            neighbors[2] = south;
-        }
-        if (west != null && west.clear) {
-            neighbors[3] = west;
-        }
-        
+        System.arraycopy(allNeighbors, 0, neighbors, 0, 4);
         return neighbors;
     }
 
@@ -177,56 +129,65 @@ public class Graph {
             return getNeighbors(x, y);
         }
 
-        Node[] neighbors = new Node[5];
-
         int dx = jumpDirection.dx;
         int dy = jumpDirection.dy;
 
-        // Pysty- ja vaakasuunta
         if (dx == 0 || dy == 0) {
-            if (!get(x + dx, y + dy).clear) {
-                return neighbors;
-            }
-
-            int lx = dy;       // Vasen x
-            int ly = -dx;      // Vasen y
-            int rx = -dy;      // Oikea x
-            int ry = dx;       // Oikea y
-            int lfx = dx + dy; // Vasen eteen x
-            int lfy = dy - dx; // Vasen eteen y
-            int rfx = dx - dy; // Oikea eteen x
-            int rfy = dx + dy; // Oikea eteen y
-
-            if (!get(x + lx, y + ly).clear && get(x + lfx, y + lfy).clear) {
-                neighbors[0] = nodes[y + lfy][x + lfx];
-            }
-            if (!get(x + rx, y + ry).clear && get(x + rfx, y + rfy).clear) {
-                neighbors[1] = nodes[y + rfy][x + rfx];
-            }
-            neighbors[2] = nodes[y + dy][x + dx];
-
+            return handleOrthogonalJumpableNeighbors(x, y, dy, dx);
         } else {
-            boolean hClear = false;
-            boolean vClear = false;
-
-            if (get(x, y + dy).clear) {
-                neighbors[0] = nodes[y + dy][x];
-                vClear = true;
-            }
-            if (get(x + dx, y).clear) {
-                neighbors[1] = nodes[y][x + dx];
-                hClear = true;
-            }
-            if ((hClear || vClear) && get(x + dx, y + dy).clear) {
-                neighbors[2] = nodes[y + dy][x + dx];
-            }
-            if (hClear && !get(x, y - dy).clear && get(x + dx, y - dy).clear) {
-                neighbors[3] = nodes[y - dy][x + dx];
-            }
-            if (vClear && !get(x - dx, y).clear && get(x - dx, y + dy).clear) {
-                neighbors[4] = nodes[y + dy][x - dx];
-            }
+            return handleDiagonalJumpableNeighbors(x, y, dx, dy);
         }
+    }
+
+    private Node[] handleDiagonalJumpableNeighbors(int x, int y, int dx, int dy) {
+        Node[] neighbors = new Node[5];
+
+        boolean hClear = false;
+        boolean vClear = false;
+
+        if (get(x, y + dy).clear) {
+            neighbors[0] = nodes[y + dy][x];
+            vClear = true;
+        }
+        if (get(x + dx, y).clear) {
+            neighbors[1] = nodes[y][x + dx];
+            hClear = true;
+        }
+        if ((hClear || vClear) && get(x + dx, y + dy).clear) {
+            neighbors[2] = nodes[y + dy][x + dx];
+        }
+        if (hClear && !get(x, y - dy).clear && get(x + dx, y - dy).clear) {
+            neighbors[3] = nodes[y - dy][x + dx];
+        }
+        if (vClear && !get(x - dx, y).clear && get(x - dx, y + dy).clear) {
+            neighbors[4] = nodes[y + dy][x - dx];
+        }
+
+        return neighbors;
+    }
+
+    private Node[] handleOrthogonalJumpableNeighbors(int x, int y, int dy, int dx) {
+        Node[] neighbors = new Node[3];
+
+        int lx = dy;       // Vasen x
+        int ly = -dx;      // Vasen y
+        int rx = -dy;      // Oikea x
+        int ry = dx;       // Oikea y
+        int lfx = dx + dy; // Vasen eteen x
+        int lfy = dy - dx; // Vasen eteen y
+        int rfx = dx - dy; // Oikea eteen x
+        int rfy = dx + dy; // Oikea eteen y
+
+        if (!get(x + dx, y + dy).clear) {
+            return neighbors;
+        }
+        if (!get(x + lx, y + ly).clear && get(x + lfx, y + lfy).clear) {
+            neighbors[0] = nodes[y + lfy][x + lfx];
+        }
+        if (!get(x + rx, y + ry).clear && get(x + rfx, y + rfy).clear) {
+            neighbors[1] = nodes[y + rfy][x + rfx];
+        }
+        neighbors[2] = nodes[y + dy][x + dx];
 
         return neighbors;
     }
@@ -249,24 +210,29 @@ public class Graph {
         int dy = direction.dy;
 
         if (dx == 0 || dy == 0) {
-            if (dx == 0) {
-                if ((get(x + 1, y + dy).clear && !get(x + 1, y).clear)
-                    || get(x - 1, y + dy).clear && !get(x - 1, y).clear) {
-                    return true;
-                }
-            } else {
-                if ((get(x + dx, y + 1).clear && !get(x, y + 1).clear)
-                    || get(x + dx, y - 1).clear && !get(x, y - 1).clear) {
-                    return true;
-                }
+            return hasOrthogonalForcedNeighbors(dx, x, y, dy);
+        } else {
+            return hasDiagonalForcedNeighbors(x, dx, y, dy);
+        }
+    }
+
+    private boolean hasDiagonalForcedNeighbors(int x, int dx, int y, int dy) {
+        return (get(x - dx, y + dy).clear && !get(x - dx, y).clear)
+               || get(x + dx, y - dx).clear && !get(x, y - dy).clear;
+    }
+
+    private boolean hasOrthogonalForcedNeighbors(int dx, int x, int y, int dy) {
+        if (dx == 0) {
+            if ((get(x + 1, y + dy).clear && !get(x + 1, y).clear)
+                || get(x - 1, y + dy).clear && !get(x - 1, y).clear) {
+                return true;
             }
         } else {
-            if ((get(x - dx, y + dy).clear && !get(x - dx, y).clear)
-                || get(x + dx, y - dx).clear && !get(x, y - dy).clear) {
+            if ((get(x + dx, y + 1).clear && !get(x, y + 1).clear)
+                || get(x + dx, y - 1).clear && !get(x, y - 1).clear) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -282,11 +248,7 @@ public class Graph {
         int dx = x + dir.dx;
         int dy = y + dir.dy;
 
-        if (isValidNode(dx, dy)) {
-            return nodes[dy][dx];
-        } else {
-            return null;
-        }
+        return get(dx, dy);
     }
 
     /**
