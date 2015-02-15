@@ -33,6 +33,24 @@ public enum Direction {
     public int getDy() {
         return dy;
     }
+    
+    /**
+     * Onko tämä suunta pysty- tai vaakasuuntainen.
+     * 
+     * @return Tosi/epätosi
+     */
+    public boolean isOrthogonal() {
+        return dx == 0 || dy == 0;
+    }
+    
+    /**
+     * Onko tämä suunta vinottain.
+     * 
+     * @return Tosi/epätosi
+     */
+    public boolean isDiagonal() {
+        return !isOrthogonal();
+    }
 
     /**
      * Palauttaa suunnan, joka vastaa suuntavektoria [x2-x1, y2-y1]. Jos

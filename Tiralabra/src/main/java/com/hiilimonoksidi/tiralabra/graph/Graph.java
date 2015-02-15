@@ -64,11 +64,12 @@ public class Graph {
      * @param dir Suunta
      * @return Naapurisolmu
      */
-    public Node getNeighborAtDirection(int x, int y, Direction dir) {
-        int dx = x + dir.dx;
-        int dy = y + dir.dy;
+    public Node getNeighbor(int x, int y, Direction dir) {
+        return get(x + dir.dx, y + dir.dy);
+    }
 
-        return get(dx, dy);
+    public boolean isClear(int x, int y, Direction dir) {
+        return getNeighbor(x, y, dir).clear;
     }
 
     /**
@@ -94,24 +95,9 @@ public class Graph {
 
     public Node[] getNeighbors(int x, int y) {
         Node[] neighbors = new Node[8];
-
-        Node north = getNeighborAtDirection(x, y, Direction.NORTH);
-        Node east = getNeighborAtDirection(x, y, Direction.EAST);
-        Node south = getNeighborAtDirection(x, y, Direction.SOUTH);
-        Node west = getNeighborAtDirection(x, y, Direction.WEST);
-        Node northeast = getNeighborAtDirection(x, y, Direction.NORTHEAST);
-        Node northwest = getNeighborAtDirection(x, y, Direction.NORTHWEST);
-        Node southeast = getNeighborAtDirection(x, y, Direction.SOUTHEAST);
-        Node southwest = getNeighborAtDirection(x, y, Direction.SOUTHWEST);
-
-        neighbors[0] = north.clear ? north : null;
-        neighbors[1] = east.clear ? east : null;
-        neighbors[2] = south.clear ? south : null;
-        neighbors[3] = west.clear ? west : null;
-        neighbors[4] = northeast.clear && (north.clear || east.clear) ? northeast : null;
-        neighbors[5] = northwest.clear && (north.clear || west.clear) ? northwest : null;
-        neighbors[6] = southeast.clear && (south.clear || east.clear) ? southeast : null;
-        neighbors[7] = southwest.clear && (south.clear || west.clear) ? southwest : null;
+        
+        System.arraycopy(getOrthogonalNeighbors(x, y), 0, neighbors, 0, 4);
+        System.arraycopy(getDiagonalNeighbors(x, y), 0, neighbors, 4, 4);
 
         return neighbors;
     }
@@ -127,9 +113,32 @@ public class Graph {
         return getOrthogonalNeighbors(node.x, node.y);
     }
 
-    public Node[] getOrthogonalNeighbors(int x, int y) {
+    private Node[] getOrthogonalNeighbors(int x, int y) {
         Node[] neighbors = new Node[4];
-        System.arraycopy(getNeighbors(x, y), 0, neighbors, 0, 4);
+        neighbors[0] = isClear(x, y, Direction.NORTH) ? getNeighbor(x, y, Direction.NORTH) : null;
+        neighbors[1] = isClear(x, y, Direction.EAST) ? getNeighbor(x, y, Direction.EAST) : null;
+        neighbors[2] = isClear(x, y, Direction.SOUTH) ? getNeighbor(x, y, Direction.SOUTH) : null;
+        neighbors[3] = isClear(x, y, Direction.WEST) ? getNeighbor(x, y, Direction.WEST) : null;
+        return neighbors;
+    }
+    
+    /**
+     * Palauttaa vinosuunnissa olevat avoimet naapurit.
+     * 
+     * @param x Tarkasteltavan solmun x
+     * @param y Tarkasteltavan solmun y
+     * @return Lista naapureista
+     */
+    public Node[] getDiagonalNeighbors(int x, int y) {
+        Node[] neighbors = new Node[4];
+        neighbors[0] = (isClear(x, y, Direction.NORTH) || isClear(x, y, Direction.EAST))
+                       && isClear(x, y, Direction.NORTHEAST) ? getNeighbor(x, y, Direction.NORTHEAST) : null;
+        neighbors[1] = (isClear(x, y, Direction.NORTH) || isClear(x, y, Direction.WEST))
+                       && isClear(x, y, Direction.NORTHWEST) ? getNeighbor(x, y, Direction.NORTHWEST) : null;
+        neighbors[2] = (isClear(x, y, Direction.SOUTH) || isClear(x, y, Direction.EAST))
+                       && isClear(x, y, Direction.SOUTHEAST) ? getNeighbor(x, y, Direction.SOUTHEAST) : null;
+        neighbors[3] = (isClear(x, y, Direction.SOUTH) || isClear(x, y, Direction.WEST))
+                       && isClear(x, y, Direction.SOUTHWEST) ? getNeighbor(x, y, Direction.SOUTHWEST) : null;
         return neighbors;
     }
 
@@ -138,25 +147,22 @@ public class Graph {
      * hypetässä annetusta solmusta annettuun suuntaan.
      *
      * @param node Solmu, jonka naapureita tarkastellaan
-     * @param jumpDirection Suunta, johon halutaan hypätä
+     * @param direction Suunta, johon halutaan hypätä
      * @return Lista naapureista joiden suuntiin tulisi hypätä
      */
-    public Node[] getJumpableNeighbors(Node node, Direction jumpDirection) {
-        return getJumpableNeighbors(node.x, node.y, jumpDirection);
+    public Node[] getJumpableNeighbors(Node node, Direction direction) {
+        return getJumpableNeighbors(node.x, node.y, direction);
     }
 
-    public Node[] getJumpableNeighbors(int x, int y, Direction jumpDirection) {
-        if (jumpDirection == null) {
+    public Node[] getJumpableNeighbors(int x, int y, Direction direction) {
+        if (direction == null) {
             return getNeighbors(x, y);
         }
 
-        int dx = jumpDirection.dx;
-        int dy = jumpDirection.dy;
-
-        if (dx == 0 || dy == 0) {
-            return getOrthogonalJumpableNeighbors(x, y, dx, dy);
+        if (direction.isOrthogonal()) {
+            return getOrthogonalJumpableNeighbors(x, y, direction);
         } else {
-            return getDiagonalJumpableNeighbors(x, y, dx, dy);
+            return getDiagonalJumpableNeighbors(x, y, direction);
         }
     }
 
@@ -174,13 +180,10 @@ public class Graph {
     }
 
     public boolean hasForcedNeighbors(int x, int y, Direction direction) {
-        int dx = direction.dx;
-        int dy = direction.dy;
-
-        if (dx == 0 || dy == 0) {
-            return hasOrthogonalForcedNeighbors(x, y, dx, dy);
+        if (direction.isOrthogonal()) {
+            return hasOrthogonalForcedNeighbors(x, y, direction);
         } else {
-            return hasDiagonalForcedNeighbors(x, y, dx, dy);
+            return hasDiagonalForcedNeighbors(x, y, direction);
         }
     }
 
@@ -189,13 +192,14 @@ public class Graph {
      *
      * @param x Tarkasteltavan solmun x
      * @param y Tarkasteltavan solmun y
-     * @param dx Hypättävän suunnan x-komponentti
-     * @param dy Hypättävän suunnan y-komponentti
+     * @param direction Hypättävä suunta
      * @return Lista naapureista
      */
-    private Node[] getDiagonalJumpableNeighbors(int x, int y, int dx, int dy) {
+    private Node[] getDiagonalJumpableNeighbors(int x, int y, Direction direction) {
         Node[] neighbors = new Node[5];
 
+        int dx = direction.dx;
+        int dy = direction.dy;
         boolean hClear = false;
         boolean vClear = false;
 
@@ -225,13 +229,14 @@ public class Graph {
      *
      * @param x Tarkasteltavan solmun x
      * @param y Tarkasteltavan solmun y
-     * @param dx Hypättävän suunnan x-komponentti
-     * @param dy Hypättävän suunnan y-komponentti
+     * @param direction Hypättävä suunta
      * @return Lista naapureista
      */
-    private Node[] getOrthogonalJumpableNeighbors(int x, int y, int dx, int dy) {
+    private Node[] getOrthogonalJumpableNeighbors(int x, int y, Direction direction) {
         Node[] neighbors = new Node[3];
 
+        int dx = direction.dx;
+        int dy = direction.dy;
         int lx = dy;       // Vasen x
         int ly = -dx;      // Vasen y
         int rx = -dy;      // Oikea x
@@ -260,11 +265,12 @@ public class Graph {
      *
      * @param x Solmun x
      * @param y Solmun y
-     * @param dx Suunnan x-komponentti
-     * @param dy Suunnan y-komponentti
+     * @param direction Suunta
      * @return Tosi/epätosi
      */
-    private boolean hasDiagonalForcedNeighbors(int x, int y, int dx, int dy) {
+    private boolean hasDiagonalForcedNeighbors(int x, int y, Direction direction) {
+        int dx = direction.dx;
+        int dy = direction.dy;
         return get(x - dx, y + dy).clear && !get(x - dx, y).clear
                || get(x + dx, y - dx).clear && !get(x, y - dy).clear;
     }
@@ -274,11 +280,12 @@ public class Graph {
      *
      * @param x Solmun x
      * @param y Solmun y
-     * @param dx Suunnan x-komponentti
-     * @param dy Suunnan y-komponentti
+     * @param direction Suunta
      * @return Tosi/epätosi
      */
-    private boolean hasOrthogonalForcedNeighbors(int x, int y, int dx, int dy) {
+    private boolean hasOrthogonalForcedNeighbors(int x, int y, Direction direction) {
+        int dx = direction.dx;
+        int dy = direction.dy;
         if (dx == 0) {
             if (get(x + 1, y + dy).clear && !get(x + 1, y).clear
                 || get(x - 1, y + dy).clear && !get(x - 1, y).clear) {

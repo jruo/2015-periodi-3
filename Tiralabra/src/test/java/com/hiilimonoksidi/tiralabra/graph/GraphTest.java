@@ -299,7 +299,6 @@ public class GraphTest {
     @Test
     public void testGetNeighbors_Node() {
         List<Node> nodes = Arrays.asList(g.getNeighbors(g.get(2, 2)));
-        assertEquals(8, nodes.size());
         assertTrue(nodes.contains(g.get(2, 1)));
         assertTrue(nodes.contains(g.get(3, 2)));
         assertTrue(nodes.contains(g.get(2, 3)));
