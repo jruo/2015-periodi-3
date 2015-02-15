@@ -281,11 +281,6 @@ public class GraphTest {
     }
 
     @Test
-    public void testGetNodes() {
-        assertTrue(g.getNodes() != null);
-    }
-
-    @Test
     public void testGet_Point() {
         Node n = g.get(new Point(0, 0));
         assertEquals(0, n.x);
@@ -310,17 +305,6 @@ public class GraphTest {
         assertTrue(nodes.contains(g.get(2, 3)));
         assertTrue(nodes.contains(g.get(1, 3)));
         assertTrue(nodes.contains(g.get(1, 2)));
-    }
-
-    @Test
-    public void testToString() {
-        assertEquals("##....#\n"
-                     + ".#.#...\n"
-                     + ".......\n"
-                     + "...#.#.\n"
-                     + ".......\n"
-                     + "..#..#.\n"
-                     + ".......\n", g.toString());
     }
 
     @Test

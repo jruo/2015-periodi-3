@@ -37,10 +37,6 @@ public class Graph {
         }
     }
 
-    public Node[][] getNodes() {
-        return nodes;
-    }
-
     /**
      * Palauttaa solmun annetussa sijainnissa. Jos sijainti on verkon
      * ulkopuolella, palauttaa aina solmun joka ei ole vapaa.
@@ -58,6 +54,32 @@ public class Graph {
         } else {
             return new Node(x, y, false);
         }
+    }
+
+    /**
+     * Palauttaa solmun (x, y) naapurisolmun suunnassa dir.
+     *
+     * @param x Solmun x
+     * @param y Solmun y
+     * @param dir Suunta
+     * @return Naapurisolmu
+     */
+    public Node getNeighborAtDirection(int x, int y, Direction dir) {
+        int dx = x + dir.dx;
+        int dy = y + dir.dy;
+
+        return get(dx, dy);
+    }
+
+    /**
+     * Tarkistaa, kuuluuko solmu (x, y) verkkoon.
+     *
+     * @param x Solmun x
+     * @param y Solmun y
+     * @return Tosi jos ja vain jos kuuluu, epätosi muutoin
+     */
+    public boolean isValidNode(int x, int y) {
+        return x >= 0 && y >= 0 && y < height && x < width;
     }
 
     /**
@@ -106,9 +128,8 @@ public class Graph {
     }
 
     public Node[] getOrthogonalNeighbors(int x, int y) {
-        Node[] allNeighbors = getNeighbors(x, y);
         Node[] neighbors = new Node[4];
-        System.arraycopy(allNeighbors, 0, neighbors, 0, 4);
+        System.arraycopy(getNeighbors(x, y), 0, neighbors, 0, 4);
         return neighbors;
     }
 
@@ -133,13 +154,46 @@ public class Graph {
         int dy = jumpDirection.dy;
 
         if (dx == 0 || dy == 0) {
-            return handleOrthogonalJumpableNeighbors(x, y, dy, dx);
+            return getOrthogonalJumpableNeighbors(x, y, dx, dy);
         } else {
-            return handleDiagonalJumpableNeighbors(x, y, dx, dy);
+            return getDiagonalJumpableNeighbors(x, y, dx, dy);
         }
     }
 
-    private Node[] handleDiagonalJumpableNeighbors(int x, int y, int dx, int dy) {
+    /**
+     * Tarkistaa, onko annetulla solmulla 'pakotettuja naapureita' eli
+     * naapureita, jotka JPS:ssä normaalisti käydään toisen solmun toimesta
+     * läpi, mutta esteen takia nykyinen solmu on pakotettu käymään se läpi.
+     *
+     * @param node Tarkistettava solmu
+     * @param direction Suunta, josta tarkistetaan naapurit
+     * @return Tosi jos naapureita on, false muutoin
+     */
+    public boolean hasForcedNeighbors(Node node, Direction direction) {
+        return hasForcedNeighbors(node.x, node.y, direction);
+    }
+
+    public boolean hasForcedNeighbors(int x, int y, Direction direction) {
+        int dx = direction.dx;
+        int dy = direction.dy;
+
+        if (dx == 0 || dy == 0) {
+            return hasOrthogonalForcedNeighbors(x, y, dx, dy);
+        } else {
+            return hasDiagonalForcedNeighbors(x, y, dx, dy);
+        }
+    }
+
+    /**
+     * Palauttaa kaikki JPS-haun hypättävät naapurit vinottaissuunnassa
+     *
+     * @param x Tarkasteltavan solmun x
+     * @param y Tarkasteltavan solmun y
+     * @param dx Hypättävän suunnan x-komponentti
+     * @param dy Hypättävän suunnan y-komponentti
+     * @return Lista naapureista
+     */
+    private Node[] getDiagonalJumpableNeighbors(int x, int y, int dx, int dy) {
         Node[] neighbors = new Node[5];
 
         boolean hClear = false;
@@ -166,7 +220,16 @@ public class Graph {
         return neighbors;
     }
 
-    private Node[] handleOrthogonalJumpableNeighbors(int x, int y, int dy, int dx) {
+    /**
+     * Palauttaa kaikki JPS-haun hypättävät naapurit pysty- ja vaakasuunnassa
+     *
+     * @param x Tarkasteltavan solmun x
+     * @param y Tarkasteltavan solmun y
+     * @param dx Hypättävän suunnan x-komponentti
+     * @param dy Hypättävän suunnan y-komponentti
+     * @return Lista naapureista
+     */
+    private Node[] getOrthogonalJumpableNeighbors(int x, int y, int dx, int dy) {
         Node[] neighbors = new Node[3];
 
         int lx = dy;       // Vasen x
@@ -193,85 +256,40 @@ public class Graph {
     }
 
     /**
-     * Tarkistaa, onko annetulla solmulla 'pakotettuja naapureita' eli
-     * naapureita, jotka JPS:ssä normaalisti käydään toisen solmun toimesta
-     * läpi, mutta esteen takia nykyinen solmu on pakotettu käymään se läpi.
+     * Tarkistaa onko solmulla pakotettuja naapureita vinosuunnassa.
      *
-     * @param node Tarkistettava solmu
-     * @param direction Suunta, josta tarkistetaan naapurit
-     * @return Tosi jos naapureita on, false muutoin
+     * @param x Solmun x
+     * @param y Solmun y
+     * @param dx Suunnan x-komponentti
+     * @param dy Suunnan y-komponentti
+     * @return Tosi/epätosi
      */
-    public boolean hasForcedNeighbors(Node node, Direction direction) {
-        return hasForcedNeighbors(node.x, node.y, direction);
-    }
-
-    public boolean hasForcedNeighbors(int x, int y, Direction direction) {
-        int dx = direction.dx;
-        int dy = direction.dy;
-
-        if (dx == 0 || dy == 0) {
-            return hasOrthogonalForcedNeighbors(dx, x, y, dy);
-        } else {
-            return hasDiagonalForcedNeighbors(x, dx, y, dy);
-        }
-    }
-
-    private boolean hasDiagonalForcedNeighbors(int x, int dx, int y, int dy) {
-        return (get(x - dx, y + dy).clear && !get(x - dx, y).clear)
+    private boolean hasDiagonalForcedNeighbors(int x, int y, int dx, int dy) {
+        return get(x - dx, y + dy).clear && !get(x - dx, y).clear
                || get(x + dx, y - dx).clear && !get(x, y - dy).clear;
     }
 
-    private boolean hasOrthogonalForcedNeighbors(int dx, int x, int y, int dy) {
+    /**
+     * Tarkistaa onko solmulla pakotettuja naapureita pysty- tai vaakasuunnassa.
+     *
+     * @param x Solmun x
+     * @param y Solmun y
+     * @param dx Suunnan x-komponentti
+     * @param dy Suunnan y-komponentti
+     * @return Tosi/epätosi
+     */
+    private boolean hasOrthogonalForcedNeighbors(int x, int y, int dx, int dy) {
         if (dx == 0) {
-            if ((get(x + 1, y + dy).clear && !get(x + 1, y).clear)
+            if (get(x + 1, y + dy).clear && !get(x + 1, y).clear
                 || get(x - 1, y + dy).clear && !get(x - 1, y).clear) {
                 return true;
             }
         } else {
-            if ((get(x + dx, y + 1).clear && !get(x, y + 1).clear)
+            if (get(x + dx, y + 1).clear && !get(x, y + 1).clear
                 || get(x + dx, y - 1).clear && !get(x, y - 1).clear) {
                 return true;
             }
         }
         return false;
     }
-
-    /**
-     * Palauttaa solmun (x, y) naapurisolmun suunnassa dir.
-     *
-     * @param x Solmun x
-     * @param y Solmun y
-     * @param dir Suunta
-     * @return Naapurisolmu
-     */
-    private Node getNeighborAtDirection(int x, int y, Direction dir) {
-        int dx = x + dir.dx;
-        int dy = y + dir.dy;
-
-        return get(dx, dy);
-    }
-
-    /**
-     * Tarkistaa, kuuluuko solmu (x, y) verkkoon.
-     *
-     * @param x Solmun x
-     * @param y Solmun y
-     * @return Tosi jos ja vain jos kuuluu, epätosi muutoin
-     */
-    public boolean isValidNode(int x, int y) {
-        return x >= 0 && y >= 0 && y < height && x < width;
-    }
-
-    @Override
-    public String toString() {
-        String r = "";
-        for (Node[] row : nodes) {
-            for (Node node : row) {
-                r += node.clear ? "." : "#";
-            }
-            r += "\n";
-        }
-        return r;
-    }
-
 }

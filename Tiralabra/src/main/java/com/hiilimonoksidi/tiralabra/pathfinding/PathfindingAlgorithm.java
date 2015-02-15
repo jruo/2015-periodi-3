@@ -128,6 +128,21 @@ public abstract class PathfindingAlgorithm {
     }
 
     /**
+     * Tarkistaa askeleen lopuksi, löytyikö maali. Jos maali löytyi, rakentaa
+     * polun.
+     *
+     * @param node Askeleessa käsitelty solmu
+     * @return Tosi jos maali löytyi, false muutoin.
+     */
+    protected boolean finishStep(Node node) {
+        if (node.x == gx && node.y == gy) {
+            reconstructPath(node);
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Palauttaa löydetyn polun.
      *
      * @return Polku
@@ -188,7 +203,7 @@ public abstract class PathfindingAlgorithm {
 
         /**
          * Luo algoritmista olion.
-         * 
+         *
          * @return Algoritmi
          */
         public PathfindingAlgorithm getInstance() {
