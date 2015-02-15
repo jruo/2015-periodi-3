@@ -29,13 +29,19 @@ public class JumpPointSearch extends AStar {
     public boolean searchStep() {
         Node current = openQueue.remove();
 
-        int cx = current.x;
-        int cy = current.y;
+        doJumps(current);
 
-        if (cx == gx && cy == gy) {
-            path = reconstructPath(current);
-            return true;
-        }
+        return finishStep(current);
+    }
+
+    /**
+     * Suorittaa hypyt.
+     *
+     * @param current Solmu josta hypätään
+     */
+    private void doJumps(Node current) {
+        cx = current.x;
+        cy = current.y;
 
         for (Node neighbor : graph.getJumpableNeighbors(cx, cy, jumpDirections[cy][cx])) {
             if (neighbor == null) {
@@ -47,34 +53,43 @@ public class JumpPointSearch extends AStar {
             Node jumped = jump(neighbor.x, neighbor.y, neighborDirection);
 
             if (jumped != null) {
-                int jx = jumped.x;
-                int jy = jumped.y;
-                
-                if (!graph.isValidNode(jx, jy)) {
-                    continue;
-                }
-
-                float gJumped = distance[cy][cx] + Calc.dist(cx, cy, jx, jy);
-
-                boolean jumpedOpen = open.contains(jumped);
-                if (!jumpedOpen || gJumped < distance[jy][jx]) {
-                    jumped.setParent(current);
-
-                    distance[jy][jx] = gJumped;
-                    heuristicDistance[jy][jx] = gJumped + Calc.dist(jx, jy, gx, gy);
-                    jumpDirections[jy][jx] = neighborDirection;
-
-                    if (jumpedOpen) {
-                        openQueue.update(jumped);
-                    } else {
-                        openQueue.add(jumped);
-                    }
-                    open.add(jumped);
-                }
+                processJump(current, jumped, neighborDirection);
             }
         }
-        
-        return false;
+    }
+
+    /**
+     * Käsittelee hypyn tuloksen.
+     *
+     * @param current Solmu josta hypättiin
+     * @param jumped Solmu johon hypättiin
+     * @param neighborDirection Suunta johon hypättiin
+     */
+    private void processJump(Node current, Node jumped, Direction neighborDirection) {
+        int jx = jumped.x;
+        int jy = jumped.y;
+
+        if (!graph.isValidNode(jx, jy)) {
+            return;
+        }
+
+        float jumpedDistance = distance[cy][cx] + Calc.dist(cx, cy, jx, jy);
+        boolean jumpedOpen = open.contains(jumped);
+
+        if (!jumpedOpen || jumpedDistance < distance[jy][jx]) {
+            jumped.setParent(current);
+
+            distance[jy][jx] = jumpedDistance;
+            heuristicDistance[jy][jx] = jumpedDistance + Calc.dist(jx, jy, gx, gy);
+            jumpDirections[jy][jx] = neighborDirection;
+
+            if (jumpedOpen) {
+                openQueue.update(jumped);
+            } else {
+                openQueue.add(jumped);
+            }
+            open.add(jumped);
+        }
     }
 
     /**

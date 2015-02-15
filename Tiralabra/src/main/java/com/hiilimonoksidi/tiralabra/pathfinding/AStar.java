@@ -39,6 +39,11 @@ public class AStar extends PathfindingAlgorithm {
      */
     protected Heap<Node> openQueue;
 
+    /**
+     * Tällä hetkellä käsittelyssä olevan solmun koordinaatit.
+     */
+    protected int cx, cy;
+
     @Override
     public void init() {
         distance = new float[graph.height][graph.width];
@@ -58,40 +63,55 @@ public class AStar extends PathfindingAlgorithm {
         Node current = openQueue.remove();
         open.remove(current);
         closed.add(current);
-        
+
         processNeighbors(current);
 
         return finishStep(current);
     }
 
+    /**
+     * Käsittelee solmun naapurit.
+     *
+     * @param current Solmu
+     */
     private void processNeighbors(Node current) {
-        int cx = current.x;
-        int cy = current.y;
-        
+        cx = current.x;
+        cy = current.y;
+
         for (Node neighbor : graph.getNeighbors(cx, cy)) {
             if (neighbor == null || closed.contains(neighbor)) {
                 continue;
             }
 
-            int nx = neighbor.x;
-            int ny = neighbor.y;
+            processNeighbor(current, neighbor);
+        }
+    }
 
-            float neighborDistance = distance[cy][cx] + (cx == nx || cy == ny ? 1 : SQRT_2);
+    /**
+     * Käsittelee tietyn naapurin.
+     *
+     * @param current Somu
+     * @param neighbor Solmun naapuri
+     */
+    private void processNeighbor(Node current, Node neighbor) {
+        int nx = neighbor.x;
+        int ny = neighbor.y;
 
-            boolean neighborOpen = open.contains(neighbor);
-            if (!neighborOpen || neighborDistance < distance[ny][nx]) {
-                neighbor.setParent(current);
+        float neighborDistance = distance[cy][cx] + (cx == nx || cy == ny ? 1 : SQRT_2);
 
-                distance[ny][nx] = neighborDistance;
-                heuristicDistance[ny][nx] = neighborDistance + Calc.dist(nx, ny, gx, gy);
+        boolean neighborOpen = open.contains(neighbor);
+        if (!neighborOpen || neighborDistance < distance[ny][nx]) {
+            neighbor.setParent(current);
 
-                if (neighborOpen) {
-                    openQueue.update(neighbor);
-                } else {
-                    openQueue.add(neighbor);
-                }
-                open.add(neighbor);
+            distance[ny][nx] = neighborDistance;
+            heuristicDistance[ny][nx] = neighborDistance + Calc.dist(nx, ny, gx, gy);
+
+            if (neighborOpen) {
+                openQueue.update(neighbor);
+            } else {
+                openQueue.add(neighbor);
             }
+            open.add(neighbor);
         }
     }
 

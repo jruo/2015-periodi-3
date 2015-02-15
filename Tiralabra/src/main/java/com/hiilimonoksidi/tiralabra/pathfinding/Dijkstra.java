@@ -63,6 +63,11 @@ public class Dijkstra extends PathfindingAlgorithm {
         return finishStep(current);
     }
 
+    /**
+     * Käsittelee solmun naapurit.
+     * 
+     * @param current Solmu
+     */
     private void processNeighbors(Node current) {
         int cx = current.x;
         int cy = current.y;

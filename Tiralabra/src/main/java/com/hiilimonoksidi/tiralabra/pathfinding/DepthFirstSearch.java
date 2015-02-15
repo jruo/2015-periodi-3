@@ -14,7 +14,14 @@ import com.hiilimonoksidi.tiralabra.graph.Node;
  */
 public class DepthFirstSearch extends PathfindingAlgorithm {
 
+    /**
+     * Käsittelyssä olevat solmut.
+     */
     private Stack<Node> open;
+
+    /**
+     * Käsitellyt solmut.
+     */
     private HashSet<Node> closed;
 
     @Override
@@ -35,6 +42,11 @@ public class DepthFirstSearch extends PathfindingAlgorithm {
         return finishStep(current);
     }
 
+    /**
+     * Käsittelee solmun naapurit.
+     *
+     * @param current Solmu
+     */
     private void processNeighbors(Node current) {
         for (Node neighbor : graph.getOrthogonalNeighbors(current)) {
             if (neighbor == null) {

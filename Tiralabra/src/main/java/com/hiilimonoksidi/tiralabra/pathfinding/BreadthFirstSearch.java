@@ -47,6 +47,11 @@ public class BreadthFirstSearch extends PathfindingAlgorithm {
         return finishStep(current);
     }
 
+    /**
+     * Käsittelee naapurisolmut.
+     * 
+     * @param current Solmu
+     */
     private void processNeighbors(Node current) {
         for (Node neighbor : graph.getNeighbors(current)) {
             if (neighbor == null || checked.contains(neighbor)) {
