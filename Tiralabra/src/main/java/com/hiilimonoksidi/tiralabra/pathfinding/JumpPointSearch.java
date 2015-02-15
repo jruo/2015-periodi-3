@@ -54,14 +54,14 @@ public class JumpPointSearch extends AStar {
                     continue;
                 }
 
-                float gJumped = g[cy][cx] + Calc.dist(cx, cy, jx, jy);
+                float gJumped = distance[cy][cx] + Calc.dist(cx, cy, jx, jy);
 
                 boolean jumpedOpen = open.contains(jumped);
-                if (!jumpedOpen || gJumped < g[jy][jx]) {
+                if (!jumpedOpen || gJumped < distance[jy][jx]) {
                     jumped.setParent(current);
 
-                    g[jy][jx] = gJumped;
-                    f[jy][jx] = gJumped + Calc.dist(jx, jy, gx, gy);
+                    distance[jy][jx] = gJumped;
+                    heuristicDistance[jy][jx] = gJumped + Calc.dist(jx, jy, gx, gy);
                     jumpDirections[jy][jx] = neighborDirection;
 
                     if (jumpedOpen) {

@@ -30,15 +30,13 @@ public class DepthFirstSearch extends PathfindingAlgorithm {
         Node current = open.pop();
         closed.add(current);
 
-        int cx = current.x;
-        int cy = current.y;
+        processNeighbors(current);
 
-        if (cx == gx && cy == gy) {
-            path = reconstructPath(current);
-            return true;
-        }
+        return finishStep(current);
+    }
 
-        for (Node neighbor : graph.getOrthogonalNeighbors(cx, cy)) {
+    private void processNeighbors(Node current) {
+        for (Node neighbor : graph.getOrthogonalNeighbors(current)) {
             if (neighbor == null) {
                 continue;
             }
@@ -48,8 +46,6 @@ public class DepthFirstSearch extends PathfindingAlgorithm {
                 open.push(neighbor);
             }
         }
-
-        return false;
     }
 
     @Override

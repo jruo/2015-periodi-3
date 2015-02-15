@@ -41,16 +41,14 @@ public class BreadthFirstSearch extends PathfindingAlgorithm {
     public boolean searchStep() {
         Node current = open.dequeue();
         closed.add(current);
-        
-        int cx = current.x;
-        int cy = current.y;
 
-        if (cx == gx && cy == gy) {
-            path = reconstructPath(current);
-            return true;
-        }
+        processNeighbors(current);
 
-        for (Node neighbor : graph.getNeighbors(cx, cy)) {
+        return finishStep(current);
+    }
+
+    private void processNeighbors(Node current) {
+        for (Node neighbor : graph.getNeighbors(current)) {
             if (neighbor == null || checked.contains(neighbor)) {
                 continue;
             }
@@ -59,8 +57,6 @@ public class BreadthFirstSearch extends PathfindingAlgorithm {
             checked.add(neighbor);
             open.enqueue(neighbor);
         }
-
-        return false;
     }
 
     @Override

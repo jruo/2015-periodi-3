@@ -136,7 +136,7 @@ public abstract class PathfindingAlgorithm {
      */
     protected boolean finishStep(Node node) {
         if (node.x == gx && node.y == gy) {
-            reconstructPath(node);
+            path = reconstructPath(node);
             return true;
         }
         return false;

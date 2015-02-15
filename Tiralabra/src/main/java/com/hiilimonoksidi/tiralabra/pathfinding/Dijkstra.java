@@ -58,15 +58,16 @@ public class Dijkstra extends PathfindingAlgorithm {
         Node current = nodes.remove();
         checked.add(current);
 
+        processNeighbors(current);
+
+        return finishStep(current);
+    }
+
+    private void processNeighbors(Node current) {
         int cx = current.x;
         int cy = current.y;
 
-        if (cx == gx && cy == gy) {
-            path = reconstructPath(current);
-            return true;
-        }
-
-        for (Node neighbor : graph.getNeighbors(current)) {
+        for (Node neighbor : graph.getNeighbors(cx, cy)) {
             if (neighbor == null) {
                 continue;
             }
@@ -83,8 +84,6 @@ public class Dijkstra extends PathfindingAlgorithm {
                 }
             }
         }
-
-        return false;
     }
 
     @Override
