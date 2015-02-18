@@ -40,33 +40,57 @@ public final class CLIApplication {
         lessOutput = arguments.hasArgument("--less");
 
         if (inputArgument != null && startArgument != null && goalArgument != null) {
-            inputFile = new File(inputArgument);
-            outputFolder = outputArgument != null ? new File(outputArgument) : null;
-            timeout = parseStringToInt(timeArgument, 0);
-
-            try {
-                start = new Point(startArgument);
-                goal = new Point(goalArgument);
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-                System.exit(1);
-            }
-
-            createGraph();
-
-            int count = parseStringToInt(countArgument, 1);
-
-            for (int i = 0; i < count; i++) {
-                if (algoArgument == null) {
-                    testAllAlgorithms();
-                } else {
-                    PathfindingAlgorithm.Type algorithm = parseAlgorithm(algoArgument);
-                    testOneAlgorithm(algorithm);
-                }
-            }
-
+            start(inputArgument, outputArgument, timeArgument,
+                  startArgument, goalArgument, countArgument, algoArgument);
         } else {
             print("Not enough arguments. Required: -i -s -g", true);
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Suorittaa ohjelman.
+     * 
+     * @param inputArgument Syöte
+     * @param outputArgument Tulostuskansio
+     * @param timeArgument Aikaraja
+     * @param startArgument Aloituspiste
+     * @param goalArgument Lopetuspiste
+     * @param countArgument Lukumäärä
+     * @param algoArgument Algoritmi
+     */
+    private void start(String inputArgument, String outputArgument,
+                       String timeArgument, String startArgument,
+                       String goalArgument, String countArgument,
+                       String algoArgument) {
+        inputFile = new File(inputArgument);
+        outputFolder = outputArgument != null ? new File(outputArgument) : null;
+        timeout = parseStringToInt(timeArgument, 0);
+        parsePoints(startArgument, goalArgument);
+        int count = parseStringToInt(countArgument, 1);
+
+        createGraph();
+        for (int i = 0; i < count; i++) {
+            if (algoArgument == null) {
+                testAllAlgorithms();
+            } else {
+                PathfindingAlgorithm.Type algorithm = parseAlgorithm(algoArgument);
+                testOneAlgorithm(algorithm);
+            }
+        }
+    }
+
+    /**
+     * Luo pisteet 
+     * @param startArgument Aloituspiste
+     * @param goalArgument Lopetuspiste
+     */
+    private void parsePoints(String startArgument, String goalArgument) {
+        try {
+            start = new Point(startArgument);
+            goal = new Point(goalArgument);
+        } catch (IllegalArgumentException e) {
+            print(e.getMessage(), true);
             System.exit(1);
         }
     }
@@ -167,7 +191,7 @@ public final class CLIApplication {
 
     /**
      * Muuttaa merkkijonon algoritmiksi.
-     * 
+     *
      * @param name Algoritmin nimi
      * @return Algoritmi tai null jos sitä ei ole olemassa
      */
