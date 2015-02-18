@@ -63,6 +63,16 @@ public class InputImageCanvas extends javax.swing.JPanel implements MouseListene
         return end;
     }
 
+    public void setStart(Point start) {
+        this.start = start;
+        repaint();
+    }
+
+    public void setEnd(Point end) {
+        this.end = end;
+        repaint();
+    }
+
     public void setImage(BufferedImage image) {
         this.image = image;
         start = null;

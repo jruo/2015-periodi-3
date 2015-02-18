@@ -11,6 +11,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 /**
  * Paneeli, jossa käyttäjä valitsee syötekuvan ja aloitus- ja lopetuspisteet.
@@ -34,18 +36,7 @@ public class InputPanel extends JPanel {
         inputImageCanvas.setPointChangedListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Point start = inputImageCanvas.getStart();
-                Point end = inputImageCanvas.getEnd();
-                if (start != null) {
-                    jLabelStart.setText("Start point: (" + start.x + ", " + start.y + ")");
-                } else {
-                    jLabelStart.setText("Start point: Select start point with left click");
-                }
-                if (end != null) {
-                    jLabelEnd.setText("End point: (" + end.x + ", " + end.y + ")");
-                } else {
-                    jLabelEnd.setText("End point: Select end point with right click");
-                }
+                updateStartAndEnd();
             }
         });
     }
@@ -74,6 +65,16 @@ public class InputPanel extends JPanel {
         inputImageCanvas = new com.hiilimonoksidi.tiralabra.application.gui.InputImageCanvas();
         jLabelStart = new javax.swing.JLabel();
         jLabelEnd = new javax.swing.JLabel();
+        jTextFieldStartX = new javax.swing.JTextField();
+        jTextFieldStartY = new javax.swing.JTextField();
+        jTextFieldEndX = new javax.swing.JTextField();
+        jTextFieldEndY = new javax.swing.JTextField();
+        jLabelStartX = new javax.swing.JLabel();
+        jLabelEndX = new javax.swing.JLabel();
+        jLabelStartY = new javax.swing.JLabel();
+        jLabelEndY = new javax.swing.JLabel();
+        jLabelStartInfo = new javax.swing.JLabel();
+        jLabelEndInfo = new javax.swing.JLabel();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -151,13 +152,16 @@ public class InputPanel extends JPanel {
         jScrollPaneImage.setViewportView(jPanelCanvasContainer);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
         jPanelMiddle.add(jScrollPaneImage, gridBagConstraints);
 
-        jLabelStart.setText("Start point: Select start point with left click");
+        jLabelStart.setText("Start point");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -165,13 +169,109 @@ public class InputPanel extends JPanel {
         gridBagConstraints.insets = new java.awt.Insets(10, 20, 0, 10);
         jPanelMiddle.add(jLabelStart, gridBagConstraints);
 
-        jLabelEnd.setText("End point: Select end point with right click");
+        jLabelEnd.setText("End point");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 20, 5, 10);
         jPanelMiddle.add(jLabelEnd, gridBagConstraints);
+
+        jTextFieldStartX.setMinimumSize(new java.awt.Dimension(30, 20));
+        jTextFieldStartX.setPreferredSize(new java.awt.Dimension(30, 20));
+        jTextFieldStartX.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextFieldStartXKeyTyped(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 5);
+        jPanelMiddle.add(jTextFieldStartX, gridBagConstraints);
+
+        jTextFieldStartY.setColumns(3);
+        jTextFieldStartY.setMinimumSize(new java.awt.Dimension(30, 20));
+        jTextFieldStartY.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextFieldStartYKeyTyped(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 10);
+        jPanelMiddle.add(jTextFieldStartY, gridBagConstraints);
+
+        jTextFieldEndX.setMinimumSize(new java.awt.Dimension(30, 20));
+        jTextFieldEndX.setPreferredSize(new java.awt.Dimension(30, 20));
+        jTextFieldEndX.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextFieldEndXKeyTyped(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
+        jPanelMiddle.add(jTextFieldEndX, gridBagConstraints);
+
+        jTextFieldEndY.setColumns(3);
+        jTextFieldEndY.setMinimumSize(new java.awt.Dimension(30, 20));
+        jTextFieldEndY.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextFieldEndYKeyTyped(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 10);
+        jPanelMiddle.add(jTextFieldEndY, gridBagConstraints);
+
+        jLabelStartX.setText("x:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 5);
+        jPanelMiddle.add(jLabelStartX, gridBagConstraints);
+
+        jLabelEndX.setText("x:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
+        jPanelMiddle.add(jLabelEndX, gridBagConstraints);
+
+        jLabelStartY.setText("y:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 5);
+        jPanelMiddle.add(jLabelStartY, gridBagConstraints);
+
+        jLabelEndY.setText("y:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 5);
+        jPanelMiddle.add(jLabelEndY, gridBagConstraints);
+
+        jLabelStartInfo.setText("Select with a left click");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 10);
+        jPanelMiddle.add(jLabelStartInfo, gridBagConstraints);
+
+        jLabelEndInfo.setText("Select with a right click");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 10);
+        jPanelMiddle.add(jLabelEndInfo, gridBagConstraints);
 
         add(jPanelMiddle, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -183,6 +283,103 @@ public class InputPanel extends JPanel {
     private void jButtonStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonStartActionPerformed
         start();
     }//GEN-LAST:event_jButtonStartActionPerformed
+
+    private void jTextFieldStartXKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldStartXKeyTyped
+        updateStart();
+    }//GEN-LAST:event_jTextFieldStartXKeyTyped
+
+    private void jTextFieldStartYKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldStartYKeyTyped
+        updateStart();
+    }//GEN-LAST:event_jTextFieldStartYKeyTyped
+
+    private void jTextFieldEndXKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldEndXKeyTyped
+        updateEnd();
+    }//GEN-LAST:event_jTextFieldEndXKeyTyped
+
+    private void jTextFieldEndYKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldEndYKeyTyped
+        updateEnd();
+    }//GEN-LAST:event_jTextFieldEndYKeyTyped
+
+    /**
+     * Päivittää koordinaattiboksit
+     */
+    private void updateStartAndEnd() {
+        Point start = inputImageCanvas.getStart();
+        Point end = inputImageCanvas.getEnd();
+        if (start != null) {
+            jTextFieldStartX.setText(start.x + "");
+            jTextFieldStartY.setText(start.y + "");
+            jLabelStartInfo.setVisible(false);
+        } else {
+            jTextFieldStartX.setText("");
+            jTextFieldStartY.setText("");
+            jLabelStartInfo.setVisible(true);
+        }
+        if (end != null) {
+            jTextFieldEndX.setText(end.x + "");
+            jTextFieldEndY.setText(end.y + "");
+            jLabelEndInfo.setVisible(false);
+        } else {
+            jTextFieldEndX.setText("");
+            jTextFieldEndY.setText("");
+            jLabelEndInfo.setVisible(true);
+        }
+    }
+
+    /**
+     * Luo pisteen sourcesta
+     *
+     * @param sourceX x
+     * @param sourceY y
+     * @param callback Kutsuu tätä jos onnistui
+     */
+    private void createPoint(final JTextField sourceX, final JTextField sourceY, final CreatePointCallback callback) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    BufferedImage image = inputImageCanvas.getImage();
+                    if (image == null) {
+                        return;
+                    }
+
+                    int x = Integer.parseInt(sourceX.getText());
+                    int y = Integer.parseInt(sourceY.getText());
+
+                    if (x >= 0 && y >= 0 && x < image.getWidth() && y < image.getHeight()) {
+                        callback.success(new Point(x, y));
+                    }
+                } catch (NumberFormatException ex) {
+                }
+            }
+        });
+    }
+
+    /**
+     * Päivittää alkupisteen
+     */
+    private void updateStart() {
+        createPoint(jTextFieldStartX, jTextFieldStartY, new CreatePointCallback() {
+            @Override
+            public void success(Point point) {
+                inputImageCanvas.setStart(point);
+                updateStartAndEnd();
+            }
+        });
+    }
+
+    /**
+     * Päivittää loppupisteen
+     */
+    private void updateEnd() {
+        createPoint(jTextFieldEndX, jTextFieldEndY, new CreatePointCallback() {
+            @Override
+            public void success(Point point) {
+                inputImageCanvas.setEnd(point);
+                updateStartAndEnd();
+            }
+        });
+    }
 
     /**
      * Tarkistaa että käyttäjä on valinnut kaiken ja siirtyy testauspaneeliin
@@ -215,12 +412,24 @@ public class InputPanel extends JPanel {
                 jTextFieldInput.setText(file.getAbsolutePath());
                 jLabelWidth.setText("Width: " + image.getWidth() + " px");
                 jLabelHeight.setText("Height: " + image.getHeight() + " px");
-                jLabelStart.setText("Start point: Select start point with left click");
-                jLabelEnd.setText("End point: Select end point with right click");
+                updateStartAndEnd();
             } catch (IOException | NullPointerException ex) {
                 JOptionPane.showMessageDialog(mainWindow, "Could not read image file", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+    }
+
+    /**
+     * Käytetään createPoint-metodissa
+     */
+    private interface CreatePointCallback {
+
+        /**
+         * Luonti onnistui
+         *
+         * @param point Piste
+         */
+        void success(Point point);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -228,15 +437,25 @@ public class InputPanel extends JPanel {
     private javax.swing.JButton jButtonBrowse;
     private javax.swing.JButton jButtonStart;
     private javax.swing.JLabel jLabelEnd;
+    private javax.swing.JLabel jLabelEndInfo;
+    private javax.swing.JLabel jLabelEndX;
+    private javax.swing.JLabel jLabelEndY;
     private javax.swing.JLabel jLabelHeight;
     private javax.swing.JLabel jLabelInput;
     private javax.swing.JLabel jLabelStart;
+    private javax.swing.JLabel jLabelStartInfo;
+    private javax.swing.JLabel jLabelStartX;
+    private javax.swing.JLabel jLabelStartY;
     private javax.swing.JLabel jLabelWidth;
     private javax.swing.JPanel jPanelBottom;
     private javax.swing.JPanel jPanelCanvasContainer;
     private javax.swing.JPanel jPanelMiddle;
     private javax.swing.JPanel jPanelTop;
     private javax.swing.JScrollPane jScrollPaneImage;
+    private javax.swing.JTextField jTextFieldEndX;
+    private javax.swing.JTextField jTextFieldEndY;
     private javax.swing.JTextField jTextFieldInput;
+    private javax.swing.JTextField jTextFieldStartX;
+    private javax.swing.JTextField jTextFieldStartY;
     // End of variables declaration//GEN-END:variables
 }
