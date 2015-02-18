@@ -15,7 +15,7 @@ public class Dijkstra extends PathfindingAlgorithm {
     /**
      * Etäisyys lähtöpisteestä tiettyyn solmuun.
      */
-    private float d[][];
+    private float distance[][];
 
     /**
      * Prioriteettijono, joka sisältää kaikki verkon solmut
@@ -33,12 +33,12 @@ public class Dijkstra extends PathfindingAlgorithm {
         int width = graph.width;
         int height = graph.height;
 
-        d = new float[height][width];
+        distance = new float[height][width];
 
         nodes = new Heap<>(new NodeComparator());
         checked = new HashSet<>();
 
-        d[start.y][start.x] = 0;
+        distance[start.y][start.x] = 0;
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 Node node = graph.get(j, i);
@@ -46,7 +46,7 @@ public class Dijkstra extends PathfindingAlgorithm {
                     continue;
                 }
                 if (j != start.x || i != start.y) {
-                    d[i][j] = Float.MAX_VALUE;
+                    distance[i][j] = Float.MAX_VALUE;
                 }
                 nodes.add(graph.get(j, i));
             }
@@ -80,9 +80,9 @@ public class Dijkstra extends PathfindingAlgorithm {
                 int nx = neighbor.x;
                 int ny = neighbor.y;
 
-                float dTest = d[cy][cx] + (cx == nx || cy == ny ? 1 : SQRT_2);
-                if (dTest < d[ny][nx]) {
-                    d[ny][nx] = dTest;
+                float dTest = distance[cy][cx] + (cx == nx || cy == ny ? 1 : SQRT_2);
+                if (dTest < distance[ny][nx]) {
+                    distance[ny][nx] = dTest;
                     neighbor.setParent(current);
 
                     nodes.update(neighbor);
@@ -114,8 +114,8 @@ public class Dijkstra extends PathfindingAlgorithm {
 
         @Override
         public int compare(Node o1, Node o2) {
-            float f1 = d[o1.y][o1.x];
-            float f2 = d[o2.y][o2.x];
+            float f1 = distance[o1.y][o1.x];
+            float f2 = distance[o2.y][o2.x];
             return (int) Math.signum(f1 - f2);
         }
     }
