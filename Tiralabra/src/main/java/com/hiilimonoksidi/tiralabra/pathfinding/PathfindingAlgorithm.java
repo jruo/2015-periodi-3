@@ -165,14 +165,13 @@ public abstract class PathfindingAlgorithm {
     protected Path reconstructPath(Node goal, Path path) {
         boolean reachedStart = false;
 
-        path.addPoint(goal.getLocation());
-        Node parent = goal.getParent();
-        while (parent != null) {
-            if (parent.x == start.x && parent.y == start.y) {
+        Node current = goal;
+        while (current != null) {
+            if (current.x == start.x && current.y == start.y) {
                 reachedStart = true;
             }
-            path.addPoint(parent.getLocation());
-            parent = parent.getParent();
+            path.addPoint(current.getLocation());
+            current = current.getParent();
         }
 
         if (reachedStart) {
