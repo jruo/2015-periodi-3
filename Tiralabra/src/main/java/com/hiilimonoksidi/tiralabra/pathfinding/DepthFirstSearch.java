@@ -18,6 +18,11 @@ public class DepthFirstSearch extends PathfindingAlgorithm {
      * Käsittelyssä olevat solmut.
      */
     private Stack<Node> open;
+    
+    /**
+     * Joukko, sisältää samat solmut kuin open. Nopeuttaa sisältyvyystarkistusta.
+     */
+    private HashSet<Node> openSet;
 
     /**
      * Käsitellyt solmut.
@@ -27,18 +32,22 @@ public class DepthFirstSearch extends PathfindingAlgorithm {
     @Override
     protected void init() {
         open = new Stack<>();
+        openSet = new HashSet<>();
         closed = new HashSet<>();
 
         open.push(graph.get(start));
+        openSet.add(graph.get(start));
     }
 
     @Override
     public boolean searchStep() {
         Node current = open.pop();
-        closed.add(current);
-
-        processNeighbors(current);
-
+        
+        if (!closed.contains(current)) {
+            closed.add(current);
+            processNeighbors(current);
+        }
+        
         return finishStep(current);
     }
 
@@ -53,9 +62,10 @@ public class DepthFirstSearch extends PathfindingAlgorithm {
                 continue;
             }
 
-            if (!closed.contains(neighbor)) {
+            if (!closed.contains(neighbor) && !openSet.contains(neighbor)) {
                 neighbor.setParent(current);
                 open.push(neighbor);
+                openSet.add(neighbor);
             }
         }
     }
