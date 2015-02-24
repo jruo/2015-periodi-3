@@ -42,7 +42,7 @@ public class HashSet<E> implements Iterable<E> {
         if (element == null) {
             throw new IllegalArgumentException("Can't add null to the set");
         }
-        
+
         if (getLoadFactor() > loadFactorThreshold) {
             grow();
         }
@@ -60,7 +60,7 @@ public class HashSet<E> implements Iterable<E> {
      */
     private void addToTable(E element, Entry<E>[] table) {
         if (tableContains(table, element)) {
-            return;
+            remove(element);
         }
 
         Entry newEntry = new Entry(element);
@@ -83,6 +83,10 @@ public class HashSet<E> implements Iterable<E> {
      * @param element Poistettava elementti
      */
     public void remove(E element) {
+        if (element == null) {
+            return;
+        }
+        
         int index = hash(element, tableSize);
         Entry entry = table[index];
 
@@ -104,6 +108,36 @@ public class HashSet<E> implements Iterable<E> {
                 entry = entry.next;
             }
         }
+    }
+
+    /**
+     * Palauttaa vastaavan elementin. Saattaa kuulostaa turhalta metodilta, mutta
+     * hyödyllinen tilanteessa, jossa vertailtava elementti onkin oikeasti eri
+     * olio, mutta equals-metodin kannalta sama.
+     *
+     * @param element Elementti, joka palautetaan
+     * @return Elementti, joka vastaa annettua elementtiä
+     */
+    public E get(E element) {
+        int index = hash(element, tableSize);
+        Entry entry = table[index];
+
+        if (entry == null) {
+            return null;
+        }
+
+        if (entry.element.equals(element)) {
+            return (E) entry.element;
+        }
+
+        while (entry.next != null) {
+            if (entry.next.element.equals(element)) {
+                return (E) entry.next.element;
+            }
+            entry = entry.next;
+        }
+
+        return null;
     }
 
     /**

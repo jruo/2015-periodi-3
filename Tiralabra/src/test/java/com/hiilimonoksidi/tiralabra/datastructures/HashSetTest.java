@@ -124,5 +124,60 @@ public class HashSetTest {
             }
         }
     }
+    
+    @Test
+    public void testEquality() {
+        HashSet<TestElement> set = new HashSet<>();
+        
+        TestElement e1 = new TestElement(1);
+        TestElement e2 = new TestElement(2);
+        TestElement e3 = new TestElement(3);
+        
+        TestElement e12 = new TestElement(1);
+        
+        set.add(e1);
+        set.add(e2);
+        set.add(e3);
+        
+        assertFalse(e1 == e12);
+        assertTrue(e1.equals(e12));
+        
+        assertTrue(e1 == set.get(e12)); // Täsmälleen sama olio?
+        assertTrue(e1 == set.get(e1));
+        
+        assertFalse(e2 == set.get(e12));
+        assertFalse(e3 == set.get(e12));
+        
+        set.remove(e12);
+        assertFalse(set.contains(e1));
+        assertFalse(set.contains(e12));
+    }
+    
+    private static class TestElement {
+        
+        int something;
 
+        public TestElement(int something) {
+            this.something = something;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 97 * hash + this.something;
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final TestElement other = (TestElement) obj;
+            return this.something == other.something;
+        }
+    }
 }
