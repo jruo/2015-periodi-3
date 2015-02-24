@@ -1,5 +1,7 @@
 package com.hiilimonoksidi.tiralabra.datastructures;
 
+import com.hiilimonoksidi.tiralabra.datastructures.HashMap.Entry;
+import java.util.Iterator;
 import java.util.Objects;
 
 /**
@@ -9,9 +11,9 @@ import java.util.Objects;
  * @param <K> Avaimen tyyppi
  * @param <V> Arvon tyyppi
  */
-public class HashMap<K, V> {
+public class HashMap<K, V> implements Iterable<Entry<K,V>> {
 
-    private final HashSet<Entry> map;
+    private final HashSet<Entry<K,V>> map;
 
     public HashMap() {
         map = new HashSet<>();
@@ -75,13 +77,18 @@ public class HashMap<K, V> {
         return map.size();
     }
 
+    @Override
+    public Iterator<Entry<K, V>> iterator() {
+        return map.iterator();
+    }
+
     /**
      * Taulukkoon talletettava olio, joka sisältää avaimen ja sen arvon.
      *
      * @param <L> Avaimen tyyppi
      * @param <X> Arvon tyyppi
      */
-    private static class Entry<L, X> {
+    public static class Entry<L, X> {
 
         final L key;
         final X value;
@@ -89,6 +96,14 @@ public class HashMap<K, V> {
         public Entry(L key, X value) {
             this.key = key;
             this.value = value;
+        }
+
+        public L getKey() {
+            return key;
+        }
+
+        public X getValue() {
+            return value;
         }
 
         @Override
