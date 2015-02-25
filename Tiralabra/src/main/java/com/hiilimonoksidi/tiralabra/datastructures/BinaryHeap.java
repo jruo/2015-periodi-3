@@ -9,7 +9,7 @@ import java.util.Iterator;
  * @author Janne Ruoho
  * @param <E> Kekoon talletettavien elementtien tyyppi
  */
-public class BinaryHeap<E> implements Heap<E> {
+public class BinaryHeap<E> implements Heap<E>, Iterable<E> {
 
     protected Object[] array;
     protected int index = 1;

@@ -11,7 +11,7 @@ import java.util.Objects;
  * @author Janne Ruoho
  * @param <E> Kekoon talletettavien elementtien tyyppi
  */
-public class IndexedBinaryHeap<E> implements Heap<E> {
+public class IndexedBinaryHeap<E> implements Heap<E>, Iterable<E> {
 
     private final WrappedHeap heap;
     private final HashSet<Entry<E>> indexSet;

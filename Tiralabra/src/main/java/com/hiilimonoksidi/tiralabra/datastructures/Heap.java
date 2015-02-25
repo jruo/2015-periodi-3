@@ -6,7 +6,7 @@ package com.hiilimonoksidi.tiralabra.datastructures;
  * @author Janne Ruoho
  * @param <E> Kekoon talletettavien elementtien tyyppi
  */
-public interface Heap<E> extends Iterable<E> {
+public interface Heap<E> {
 
     /**
      * Lisää elementin kekoon.
