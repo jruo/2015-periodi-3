@@ -9,13 +9,18 @@ import java.util.Objects;
  * toimii vakioajassa.
  *
  * @author Janne Ruoho
- * @param <E>
+ * @param <E> Kekoon talletettavien elementtien tyyppi
  */
 public class IndexedBinaryHeap<E> implements Heap<E> {
 
     private final WrappedHeap heap;
     private final HashSet<Entry<E>> indexSet;
 
+    /**
+     * Luo uuden keon comparatorilla. Järjestetään minimikeoksi.
+     *
+     * @param comparator Comparator
+     */
     public IndexedBinaryHeap(Comparator<E> comparator) {
         heap = new WrappedHeap(comparator);
         indexSet = new HashSet<>();
@@ -63,7 +68,20 @@ public class IndexedBinaryHeap<E> implements Heap<E> {
 
     @Override
     public Iterator<E> iterator() {
-        throw null;
+        final Iterator<Entry<E>> heapIterator = heap.iterator();
+        
+        return new Iterator<E>() {
+
+            @Override
+            public boolean hasNext() {
+                return heapIterator.hasNext();
+            }
+
+            @Override
+            public E next() {
+                return heapIterator.next().element;
+            }
+        };
     }
 
     @Override
