@@ -69,7 +69,7 @@ public class IndexedBinaryHeap<E> implements Heap<E>, Iterable<E> {
     @Override
     public Iterator<E> iterator() {
         final Iterator<Entry<E>> heapIterator = heap.iterator();
-        
+
         return new Iterator<E>() {
 
             @Override
@@ -82,6 +82,15 @@ public class IndexedBinaryHeap<E> implements Heap<E>, Iterable<E> {
                 return heapIterator.next().element;
             }
         };
+    }
+
+    /**
+     * Palauttaa sisältävän keon iteraattorin (testausta varten).
+     *
+     * @return Iteraattori
+     */
+    Iterator<Entry<E>> entryIterator() {
+        return heap.iterator();
     }
 
     @Override
@@ -139,7 +148,7 @@ public class IndexedBinaryHeap<E> implements Heap<E>, Iterable<E> {
      *
      * @param <T>
      */
-    private static class Entry<T> {
+    static class Entry<T> {
 
         T element;
         int index;

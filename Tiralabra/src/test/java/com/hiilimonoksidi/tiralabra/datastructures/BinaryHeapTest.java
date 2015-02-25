@@ -14,7 +14,7 @@ import org.junit.Test;
  *
  * @author Janne Ruoho
  */
-public class HeapTest {
+public class BinaryHeapTest {
 
     BinaryHeap<Integer> heap;
 
@@ -112,8 +112,8 @@ public class HeapTest {
                 }
             }
             
-            for (int j = 0; j < randomElementsToRemove.size(); j++) {
-                heap.remove(randomElementsToRemove.get(j));
+            for (Integer randomElementsToRemove1 : randomElementsToRemove) {
+                heap.remove(randomElementsToRemove1);
             }
 
             int last = -1;
@@ -130,9 +130,7 @@ public class HeapTest {
     
     @Test
     public void testIterator() {
-        ArrayList<Integer> testList = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            testList.add(i);
             heap.add(i);
         }
         

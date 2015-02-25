@@ -1,6 +1,9 @@
 package com.hiilimonoksidi.tiralabra.datastructures;
 
+import com.hiilimonoksidi.tiralabra.datastructures.IndexedBinaryHeap.Entry;
 import java.util.Comparator;
+import java.util.Iterator;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,7 +13,7 @@ import org.junit.Test;
  */
 public class IndexedBinaryHeapTest {
     
-    Heap<Integer> heap;
+    IndexedBinaryHeap<Integer> heap;
     
     @Before
     public void setUp() {
@@ -23,31 +26,15 @@ public class IndexedBinaryHeapTest {
     }
 
     @Test
-    public void testAdd() {
-    }
-
-    @Test
-    public void testIsEmpty() {
-    }
-
-    @Test
-    public void testRemove_0args() {
-    }
-
-    @Test
-    public void testRemove_GenericType() {
-    }
-
-    @Test
-    public void testSize() {
-    }
-
-    @Test
-    public void testUpdate() {
-    }
-
-    @Test
-    public void testIterator() {
+    public void test() {
+        for (int i = 0; i < 100; i++) {
+            heap.add((int) (Math.random() * 100));
+        }
+        
+        Iterator<Entry<Integer>> iterator = heap.entryIterator();
+        for (int i = 1; iterator.hasNext(); i++) {
+            assertEquals(i, iterator.next().index, 0);
+        }
     }
     
 }
