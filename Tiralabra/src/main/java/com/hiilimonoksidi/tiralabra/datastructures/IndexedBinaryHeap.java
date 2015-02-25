@@ -13,7 +13,7 @@ import java.util.Objects;
  */
 public class IndexedBinaryHeap<E> implements Heap<E>, Iterable<E> {
 
-    private final WrappedHeap heap;
+    private final EntryHeap heap;
     private final HashSet<Entry<E>> indexSet;
 
     /**
@@ -22,7 +22,7 @@ public class IndexedBinaryHeap<E> implements Heap<E>, Iterable<E> {
      * @param comparator Comparator
      */
     public IndexedBinaryHeap(Comparator<E> comparator) {
-        heap = new WrappedHeap(comparator);
+        heap = new EntryHeap(comparator);
         indexSet = new HashSet<>();
     }
 
@@ -99,13 +99,13 @@ public class IndexedBinaryHeap<E> implements Heap<E>, Iterable<E> {
     }
 
     /**
-     * Varsinainen keko, joka hoitaa indeksoinnin. Perii BinaryHeapin, mutta
+     * Varsinainen keko, johon elementit tallennetaan. Perii BinaryHeapin, mutta
      * jokaisen indeksejä muuttavan operaation jälkeen tallettaa indeksin
      * oikeaan Entryyn.
      */
-    private class WrappedHeap extends BinaryHeap<Entry<E>> {
+    private class EntryHeap extends BinaryHeap<Entry<E>> {
 
-        public WrappedHeap(final Comparator<E> comparator) {
+        public EntryHeap(final Comparator<E> comparator) {
             super(new Comparator<Entry<E>>() {
                 @Override
                 public int compare(Entry<E> entry1, Entry<E> entry2) {
@@ -121,16 +121,16 @@ public class IndexedBinaryHeap<E> implements Heap<E>, Iterable<E> {
         }
 
         @Override
-        int find(Entry<E> entry) {
+        protected int find(Entry<E> entry) {
             Entry<E> found = indexSet.get(entry);
             if (found != null) {
-                return indexSet.get(entry).index;
+                return found.index;
             }
             return 0;
         }
 
         @Override
-        void swap(int ind1, int ind2) {
+        protected void swap(int ind1, int ind2) {
             Entry<E> entry1 = (Entry<E>) array[ind1];
             Entry<E> entry2 = (Entry<E>) array[ind2];
 
@@ -146,11 +146,11 @@ public class IndexedBinaryHeap<E> implements Heap<E>, Iterable<E> {
      * Kekoon talletettava alkio, joka sisältää varsinaisen talletettavan
      * elementin ja indeksin keossa.
      *
-     * @param <T>
+     * @param <T> Elementin tyyppi
      */
     static class Entry<T> {
 
-        T element;
+        final T element;
         int index;
 
         public Entry(T element) {

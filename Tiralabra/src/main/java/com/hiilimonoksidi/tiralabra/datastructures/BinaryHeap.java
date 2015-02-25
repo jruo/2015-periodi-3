@@ -93,7 +93,7 @@ public class BinaryHeap<E> implements Heap<E>, Iterable<E> {
      * @param element Etsittävä elementti
      * @return Elementin indeksi tai 0, jos ei löytynyt
      */
-    int find(E element) {
+    protected int find(E element) {
         int ind = 0;
         for (int i = 1; i < index; i++) {
             if (element.equals(array[i])) {
@@ -234,7 +234,7 @@ public class BinaryHeap<E> implements Heap<E>, Iterable<E> {
      * @param ind1 Ensimmäisen elementin indeksi
      * @param ind2 Toisen elementin indeksi
      */
-    void swap(int ind1, int ind2) {
+    protected void swap(int ind1, int ind2) {
         Object o = array[ind1];
         array[ind1] = array[ind2];
         array[ind2] = o;
