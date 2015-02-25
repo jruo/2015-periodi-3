@@ -2,6 +2,7 @@ package com.hiilimonoksidi.tiralabra.pathfinding;
 
 import com.hiilimonoksidi.tiralabra.datastructures.HashSet;
 import com.hiilimonoksidi.tiralabra.datastructures.Heap;
+import com.hiilimonoksidi.tiralabra.datastructures.IndexedBinaryHeap;
 import com.hiilimonoksidi.tiralabra.graph.Node;
 import java.util.Comparator;
 
@@ -35,7 +36,7 @@ public class Dijkstra extends PathfindingAlgorithm {
 
         distance = new float[height][width];
 
-        nodes = new Heap<>(new NodeComparator());
+        nodes = new IndexedBinaryHeap<>(new NodeComparator());
         checked = new HashSet<>();
 
         distance[start.y][start.x] = 0;

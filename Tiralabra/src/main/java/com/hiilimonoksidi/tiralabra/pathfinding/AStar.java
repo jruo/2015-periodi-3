@@ -1,7 +1,7 @@
 package com.hiilimonoksidi.tiralabra.pathfinding;
 
 import com.hiilimonoksidi.tiralabra.datastructures.HashSet;
-import com.hiilimonoksidi.tiralabra.datastructures.Heap;
+import com.hiilimonoksidi.tiralabra.datastructures.BinaryHeap;
 import com.hiilimonoksidi.tiralabra.graph.Node;
 import com.hiilimonoksidi.tiralabra.misc.Calc;
 import java.util.Comparator;
@@ -37,7 +37,7 @@ public class AStar extends PathfindingAlgorithm {
     /**
      * Prioriteettijono, joka sisältää solmut, jotka odottavat tutkimisvuoroa.
      */
-    protected Heap<Node> openQueue;
+    protected BinaryHeap<Node> openQueue;
 
     /**
      * Tällä hetkellä käsittelyssä olevan solmun koordinaatit.
@@ -51,7 +51,7 @@ public class AStar extends PathfindingAlgorithm {
 
         closed = new HashSet<>();
         open = new HashSet<>();
-        openQueue = new Heap<>(new NodeComparator());
+        openQueue = new BinaryHeap<>(new NodeComparator());
 
         Node startNode = graph.get(start);
         openQueue.add(startNode);

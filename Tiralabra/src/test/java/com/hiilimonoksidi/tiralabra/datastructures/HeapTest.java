@@ -16,11 +16,11 @@ import org.junit.Test;
  */
 public class HeapTest {
 
-    Heap<Integer> heap;
+    BinaryHeap<Integer> heap;
 
     @Before
     public void setUp() {
-        heap = new Heap<>(new Comparator<Integer>() {
+        heap = new BinaryHeap<>(new Comparator<Integer>() {
             @Override
             public int compare(Integer o1, Integer o2) {
                 return o1 - o2;
